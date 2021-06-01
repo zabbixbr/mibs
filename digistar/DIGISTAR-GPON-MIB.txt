@@ -1,0 +1,2973 @@
+DIGISTAR-GPON-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+    MODULE-IDENTITY,
+    OBJECT-TYPE,
+    Integer32,
+    Counter32,
+    Gauge32,
+    Unsigned32,
+	NOTIFICATION-TYPE,
+	Counter64
+					        FROM SNMPv2-SMI
+	TimeStamp, TruthValue, DisplayString	FROM SNMPv2-TC
+	NOTIFICATION-GROUP,
+	OBJECT-GROUP, MODULE-COMPLIANCE		FROM SNMPv2-CONF
+	InterfaceIndex				FROM IF-MIB
+	digistarExperimental			FROM DIGISTAR-MIB;
+
+digistarGponMIB MODULE-IDENTITY
+	LAST-UPDATED "201507071136Z"  -- 20 October 2014
+        ORGANIZATION    "Digistar Telecomunication, Inc."
+        CONTACT-INFO
+                "       Digistar 
+
+                Postal: Sao Leopoldo, RS
+                        Brazil
+
+                Tel: +
+
+                E-mail: engenharia@digistar.com.br"
+        DESCRIPTION
+        	"GPON MIB Digistar."
+
+	REVISION "201507071136Z"    -- July 7, 2015 at 11:36 GMT
+	DESCRIPTION 
+		"Added a lot of informations to OLT config table."
+
+	REVISION "201410200000Z"  -- 20 October 2014
+        DESCRIPTION
+                "GPON MIB module.
+                 This MIB manages the GPON      
+                 of Digistar's Devices.
+                "
+::= { digistarExperimental 6 }
+
+--
+-- This MIB provides the GPON information of Digistar's Devices.
+--
+--
+--
+-- OBJECTS
+--
+digistarGponTraps	 OBJECT IDENTIFIER ::= { digistarGponMIB 0 }
+digistarGponObjects	 OBJECT IDENTIFIER ::= { digistarGponMIB 1 } 
+digistarGponConformance  OBJECT IDENTIFIER ::= { digistarGponMIB 2 }
+
+digistarGponCfg	 	OBJECT IDENTIFIER ::= { digistarGponObjects 1 }  --- Configuration
+digistarGponStatus	OBJECT IDENTIFIER ::= { digistarGponObjects 2 }  --- Status
+digistarGponSwImage	OBJECT IDENTIFIER ::= { digistarGponObjects 3 }  --- Software Image
+digistarGponStatistics	OBJECT IDENTIFIER ::= { digistarGponObjects 4 }  --- Statistics
+
+
+--****************************************************************************
+-- OLT-Configuration
+--****************************************************************************
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1
+		digistarGponOltConfigTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponOltConfigEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Configuration parameters that apply to one OLT"
+			::= { digistarGponCfg 1 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1
+		digistarGponOltConfigEntry OBJECT-TYPE
+			SYNTAX DigistarGponOltConfigEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"One row of the gpon olt config entry table."
+			INDEX { digistarGponOltLinkId }
+			::= { digistarGponOltConfigTable 1 }
+
+		
+		DigistarGponOltConfigEntry ::=
+			SEQUENCE { 
+				digistarGponOltLinkId
+					Integer32,
+				digistarGponOltIfIndex
+					InterfaceIndex,
+				digistarGponOltConfigMaxRtPropagationDelay
+					Integer32,
+				digistarGponOltConfigMaxOnuResponseTime
+					Integer32,
+				digistarGponOltConfigPreassignedEqD
+					Integer32,
+				digistarGponOltConfigLosAlpha
+					Integer32,
+				digistarGponOltConfigLofAlpha
+					Integer32,
+				digistarGponOltConfigLoamAlpha
+					Integer32,
+				digistarGponOltConfigScrambler
+					TruthValue,
+				digistarGponOltConfigFecMode
+					TruthValue,
+				digistarGponOltConfigAutoLearn
+					TruthValue,
+				digistarGponOltConfigPowerLevel
+					Unsigned32,
+				digistarGponOltConfigGuardBitCount
+					Integer32,
+				digistarGponOltConfigDbaMode
+					INTEGER,
+				digistarGponOltConfigGemBlockSize
+					Integer32,
+				digistarGponOltConfigUsBerInterval
+					Integer32,
+				digistarGponOltConfigDsBerInterval
+					Integer32,
+				digistarGponOltConfigBerSfThreshold
+					Integer32,
+				digistarGponOltConfigBerSdThreshold
+					Integer32,
+				digistarGponOltConfigFecRequest
+					TruthValue,
+				digistarGponOltConfigKeyExchange
+					TruthValue,
+				digistarGponOltConfigMinRtPropagationDelay
+					Integer32,
+				digistarGponOltConfigMinOnuResponseTime
+					Integer32,
+				digistarGponOltConfigEqDMeasureCycles
+					Integer32,
+				digistarGponOltConfigDriftControlInterval
+					Integer32,
+				digistarGponOltConfigDriftControlLimit
+					Integer32,
+				digistarGponOltConfigAllocCycleLength
+					Integer32,
+				digistarGponOltConfigMinUsAlloc
+					Integer32,
+				digistarGponOltConfigAckTimeout
+					Integer32,
+				digistarGponOltConfigPlsMaxAllocSize
+					Integer32,
+				digistarGponOltConfigDbaCycle
+					Unsigned32,
+				digistarGponOltConfigSrDbaReportingBlockSize
+					Unsigned32,
+				digistarGponOltConfigProtectionSwitchoverTimer
+					Unsigned32,
+				digistarGponOltConfigPreambleOverride
+					TruthValue,
+				digistarGponOltConfigPreambleType0
+					OCTET STRING,
+				digistarGponOltConfigPreambleType1
+					OCTET STRING,
+				digistarGponOltConfigPreambleType3PreRange
+					OCTET STRING,
+				digistarGponOltConfigPreambleType3PostRange
+					OCTET STRING,
+				digistarGponOltConfigPreambleType3Pattern
+					OCTET STRING,
+				digistarGponOltConfigBipErrorMonitoring
+					INTEGER,
+				digistarGponOltConfigBipErrorsPerSampleThreshold
+					Integer32,
+				digistarGponOltConfigBipErroredSamplesThreshold
+					Integer32,
+				digistarGponOltConfigBipMaxSampleGap
+					Integer32,
+				digistarGponOltConfigRogueOnuDetection
+					INTEGER,
+				digistarGponOltConfigRogueOnuDetectFrequency
+					Integer32,
+				digistarGponOltConfigRogueOnuRxPowerThreshold
+					Integer32
+			}
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.1
+		digistarGponOltLinkId OBJECT-TYPE
+			SYNTAX Integer32(1..8)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"The Identification of the OLT link."
+			::= { digistarGponOltConfigEntry 1 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.2
+		digistarGponOltIfIndex OBJECT-TYPE
+			SYNTAX InterfaceIndex
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"The ifIndex of the physical olt interface."
+			::= { digistarGponOltConfigEntry 2 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.3
+		digistarGponOltConfigMaxRtPropagationDelay OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "usec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Maximum round trip propagation delay. Combined with max ONU response 
+				time and preassigned delay determins maximum logical PON distance. 
+				Default 200 usec for 20 dm."
+			DEFVAL { 200 }
+			::= { digistarGponOltConfigEntry 3 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.4
+		digistarGponOltConfigMaxOnuResponseTime OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "usec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Combined with max rt propagation delay, determins maximum logical 
+				PON distance."
+			DEFVAL { 50 }
+			::= { digistarGponOltConfigEntry 4 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.5
+		digistarGponOltConfigPreassignedEqD OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "usec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Combined with max rt propagation delay and max onu response time 
+				determines max logical PON distance."
+			DEFVAL { 0 }
+			::= { digistarGponOltConfigEntry 5 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.6
+		digistarGponOltConfigLosAlpha OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Number of loss-of-signal occurrences to trigger alarm."
+			DEFVAL { 4 }
+			::= { digistarGponOltConfigEntry 6 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.7
+		digistarGponOltConfigLofAlpha OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Number of loss-of-frame occurrences to trigger alarm."
+			DEFVAL { 4 }
+			::= { digistarGponOltConfigEntry 7 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.8
+		digistarGponOltConfigLoamAlpha OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Number of loss-of-OAM occurrences to trigger alarm."
+			DEFVAL { 3 }
+			::= { digistarGponOltConfigEntry 8 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.9
+		digistarGponOltConfigScrambler OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Description."
+			DEFVAL { true }
+			::= { digistarGponOltConfigEntry 9 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.10
+		digistarGponOltConfigFecMode OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Enables or disables forward error correction."
+			DEFVAL { false }
+			::= { digistarGponOltConfigEntry 10 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.11
+		digistarGponOltConfigAutoLearn OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Enable or disable password auto-learn mode."
+			DEFVAL { true }
+			::= { digistarGponOltConfigEntry 11 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.12
+		digistarGponOltConfigPowerLevel OBJECT-TYPE
+			SYNTAX Unsigned32
+			UNITS "db"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Olt power level. For the Broadlight 3000, values will be rounded down
+				to one of 0, 3, or 6."
+			DEFVAL { 0 }
+			::= { digistarGponOltConfigEntry 12 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.13
+		digistarGponOltConfigGuardBitCount OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "bits"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Number of guard bits for upstream transmission."
+			DEFVAL { 32 }
+			::= { digistarGponOltConfigEntry 13 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.14
+		digistarGponOltConfigDbaMode OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				predictive(1),
+				piggyback(2),
+				wholeReport(3)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Working DBA mode."
+			DEFVAL { predictive }
+			::= { digistarGponOltConfigEntry 14 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.15
+		digistarGponOltConfigGemBlockSize OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "bytes"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Basic unit in bytes used by all ONUs for DBA reports
+				of their queue occupancy (for piggyback and whole-report
+				DBA only)."
+			DEFVAL { 16 }
+			::= { digistarGponOltConfigEntry 15 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.16
+		digistarGponOltConfigUsBerInterval OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "msec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Interval for upstream bit error rate calculation."
+			DEFVAL { 5000 }
+			::= { digistarGponOltConfigEntry 16 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.17
+		digistarGponOltConfigDsBerInterval OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "msec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Interval used for downstream bit error rate calculation."
+			DEFVAL { 5000 }
+			::= { digistarGponOltConfigEntry 17 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.18
+		digistarGponOltConfigBerSfThreshold OBJECT-TYPE
+			SYNTAX Integer32 (3..8)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Threshold is 10**(-N) for signal fail."
+			DEFVAL { 3 }
+			::= { digistarGponOltConfigEntry 18 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.19
+		digistarGponOltConfigBerSdThreshold OBJECT-TYPE
+			SYNTAX Integer32 (4..9)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Threshold is 10**(-N) for signal degrade. 
+				Must exceed sf threshold."
+			DEFVAL { 5 }
+			::= { digistarGponOltConfigEntry 19 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.20
+		digistarGponOltConfigFecRequest OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Indicates whether OLT turns on FEC indication for all Alloc-Id
+				in the Upstream Bandwidth Map."
+			DEFVAL { false }
+			::= { digistarGponOltConfigEntry 20 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.21
+		digistarGponOltConfigKeyExchange OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Specifies whether Single Key exchange should be performed 
+				during ONU activation process."
+			DEFVAL { false }
+			::= { digistarGponOltConfigEntry 21 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.22
+		digistarGponOltConfigMinRtPropagationDelay OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "usec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"If closest ONU location is known, GPON_stack uses 
+				this value in order to limit the size of the quiet zone."
+			DEFVAL { 0 }
+			::= { digistarGponOltConfigEntry 22 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.23
+		digistarGponOltConfigMinOnuResponseTime OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "usec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"GPON_stack uses this value in order to limit the
+				size of the quiet zone."
+			DEFVAL { 10 }
+			::= { digistarGponOltConfigEntry 23 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.24
+		digistarGponOltConfigEqDMeasureCycles OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Defines the number of measurement cycles in the Ranging process."
+			DEFVAL { 5 }
+			::= { digistarGponOltConfigEntry 24 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.25
+		digistarGponOltConfigDriftControlInterval OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "msec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Defines the interval of periodic monitoring on 
+				drifts of upstream data."
+			DEFVAL { 1000 }
+			::= { digistarGponOltConfigEntry 25 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.26
+		digistarGponOltConfigDriftControlLimit OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "bits"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Indicates the limit of upstream data drift."
+			DEFVAL { 3 }
+			::= { digistarGponOltConfigEntry 26 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.27
+		digistarGponOltConfigAllocCycleLength OBJECT-TYPE
+			SYNTAX Integer32 (1..10)
+			UNITS "msec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Alloc-ID assignment map cycle length."
+			DEFVAL { 2 }
+			::= { digistarGponOltConfigEntry 27 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.28
+		digistarGponOltConfigMinUsAlloc OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "bytes"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Size of minimal upstream allocation per frame."
+			DEFVAL { 16 }
+			::= { digistarGponOltConfigEntry 28 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.29
+		digistarGponOltConfigAckTimeout OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "msec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Timeout length of Acknowledge message."
+			DEFVAL { 2000 }
+			::= { digistarGponOltConfigEntry 29 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.30
+		digistarGponOltConfigPlsMaxAllocSize OBJECT-TYPE
+			SYNTAX Integer32
+			UNITS "bytes"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Indecates a size of unassigned allocation that should be attached
+				to the end of ranging window."
+			DEFVAL { 120 }
+			::= { digistarGponOltConfigEntry 30 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.31
+		digistarGponOltConfigDbaCycle OBJECT-TYPE
+			SYNTAX Unsigned32 (2..10)
+			UNITS "msec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"The Dynamic Bandwidth Allocation(dba) cycle determines the DBA interval
+				size. Its an integer multiplicant of 2 milli seconds. The range of values
+				for the dba cycle can be between 2ms-10ms."
+			DEFVAL { 2 }
+			::= { digistarGponOltConfigEntry 31 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.32
+		digistarGponOltConfigSrDbaReportingBlockSize OBJECT-TYPE
+			SYNTAX Unsigned32
+			UNITS "bytes"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"For DBA of SR type, the block size defines the resolution of the status
+				reports per PON link.The default value is 48 bytes."
+			DEFVAL { 48 }
+			::= { digistarGponOltConfigEntry 32 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.33
+		digistarGponOltConfigProtectionSwitchoverTimer OBJECT-TYPE
+			SYNTAX Unsigned32
+			UNITS "msec"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"If we receive LOS alarm for a link in Active state, the link state
+				changes to Switch Over Pending state. If the actual switch-over does
+				not happen after this protection-switchover-timeout expires, the link
+				will go back to Active state"
+			DEFVAL { 500 }
+			::= { digistarGponOltConfigEntry 33 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.34
+		digistarGponOltConfigPreambleOverride OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Used to force the OLT to use the Preamble configuration in the
+				OLT configuration profile.  Otherwise the Preamble configuration
+				will be determined at runtime and based on the SFP.
+				"
+			DEFVAL { false }
+			::= { digistarGponOltConfigEntry 34 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.35
+		digistarGponOltConfigPreambleType0 OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (0..4))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Byte number for preamble type 0.
+				
+				This string represents a hex value with range 0x00 to 0xFF.
+				
+				String must have the following format: 0xNN   where
+				where N is  0..9, A..F,  a..f
+				"
+			DEFVAL { "0x00" }
+			::= { digistarGponOltConfigEntry 35 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.36
+		digistarGponOltConfigPreambleType1 OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (0..4))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Byte number for preamble type 1.
+				
+				This string represents a hex value with range 0x00 to 0xFF.
+				
+				String must have the following format: 0xNN   where
+				where N is  0..9, A..F,  a..f
+				"
+			DEFVAL { "0x00" }
+			::= { digistarGponOltConfigEntry 36 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.37
+		digistarGponOltConfigPreambleType3PreRange OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (0..4))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Byte number for preamble type 3 pre-ranging.
+				
+				This string represents a hex value with range 0x00 to 0xFF.
+				
+				String must have the following format: 0xNN   where
+				where N is  0..9, A..F,  a..f
+				"
+			DEFVAL { "0x0b" }
+			::= { digistarGponOltConfigEntry 37 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.38
+		digistarGponOltConfigPreambleType3PostRange OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (0..4))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Byte number for preamble type 3 post-ranging.
+				
+				This string represents a hex value with range 0x00 to 0xFF.
+				
+				String must have the following format: 0xNN   where
+				where N is  0..9, A..F,  a..f
+				"
+			DEFVAL { "0x08" }
+			::= { digistarGponOltConfigEntry 38 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.39
+		digistarGponOltConfigPreambleType3Pattern OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (0..4))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Preamble type 3 pattern.
+				
+				This string represents a hex value with range 0x00 to 0xFF.
+				
+				String must have the following format: 0xNN   where
+				where N is  0..9, A..F,  a..f
+				"
+			DEFVAL { "0xaa" }
+			::= { digistarGponOltConfigEntry 39 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.40
+		digistarGponOltConfigBipErrorMonitoring OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				disabled(1),
+				monitorOnly(2),
+				blockOnError(3)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"If in disabled mode, do not report BIP errors, do not disable ONU and
+				do not throw any traps."
+			DEFVAL { monitorOnly }
+			::= { digistarGponOltConfigEntry 40 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.41
+		digistarGponOltConfigBipErrorsPerSampleThreshold OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"If the number of BIP errors per sample exceeds this threshold,
+				it is counted as an errored sample."
+			DEFVAL { 100 }
+			::= { digistarGponOltConfigEntry 41 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.42
+		digistarGponOltConfigBipErroredSamplesThreshold OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"If the number of errored samples exceed this sample threshold,
+				report and disable the onu if in blockOnError mode, 
+				otherwise simply report the threshold as being exceeded."
+			DEFVAL { 10 }
+			::= { digistarGponOltConfigEntry 42 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.43
+		digistarGponOltConfigBipMaxSampleGap OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"If two adjancent errored samples were taken farther apart than
+				this threshold, do not count the earlier sample as an errored sample."
+			DEFVAL { 10 }
+			::= { digistarGponOltConfigEntry 43 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.44
+		digistarGponOltConfigRogueOnuDetection OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				disabled(1),
+				rogueRssi(2),
+				backgroundProcess(3),
+				autoRssi(4)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Controls detection of rogue ONU on fiber.
+				Values are:
+				1. detection disabled
+				2. detect via measurement from rssi process
+				3. detect via indication from background process.
+				4. normally off, but switch to rssi mode if
+				   rogue is suspected."
+			DEFVAL { disabled }
+			::= { digistarGponOltConfigEntry 44 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.45
+		digistarGponOltConfigRogueOnuDetectFrequency OBJECT-TYPE
+			SYNTAX Integer32 (1..60)
+			UNITS "seconds"
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Frequency in seconds for detection 
+				background task."
+			DEFVAL { 10 }
+			::= { digistarGponOltConfigEntry 45 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.1.1.46
+		digistarGponOltConfigRogueOnuRxPowerThreshold OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Power level below which to report rssi
+				rogue ONU."
+			DEFVAL { -30 }
+			::= { digistarGponOltConfigEntry 46 }
+
+
+--****************************************************************************
+-- ONU-Configuration
+--****************************************************************************
+
+------ 
+------ ONUs available
+------
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.2
+		digistarGponSerialNoTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponSerialNoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Table of discovered serial numbers available
+				for assignment to onus."
+			::= { digistarGponCfg 2 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.2.1
+		digistarGponSerialNoEntry OBJECT-TYPE
+			SYNTAX DigistarGponSerialNoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Row in the Gpon onu serial number table"
+			INDEX { digistarGponSerialNoOltLinkId, digistarGponSerialNoIndexId }
+			::= { digistarGponSerialNoTable 1 }
+
+		
+		DigistarGponSerialNoEntry ::=
+			SEQUENCE { 
+				digistarGponSerialNoOltLinkId
+					Unsigned32,
+				digistarGponSerialNoIndexId
+					Unsigned32,
+				digistarGponSerialNoVendorId
+					DisplayString,
+				digistarGponSerialNoVendorSpecific
+					DisplayString
+			 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.2.1.1
+		digistarGponSerialNoOltLinkId OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Link number of the Olt on which serial number
+				was discovered."
+			::= { digistarGponSerialNoEntry 1 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.2.1.2
+		digistarGponSerialNoIndexId OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"An identifying number, unique within olt, 
+				for this discovered onu serial number."
+			::= { digistarGponSerialNoEntry 2 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.2.1.3
+		digistarGponSerialNoVendorId OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..4))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"The 4-character vendor id portion of serial number. "
+			::= { digistarGponSerialNoEntry 3 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.2.1.4
+		digistarGponSerialNoVendorSpecific OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (1..10))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Vendor specific portion of the unassigned onu
+				serial number, a string of decimal digits."
+			::= { digistarGponSerialNoEntry 4 }
+
+		
+
+-----------------------------------------------------------------------
+------ ONUs
+-----------------------------------------------------------------------
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3
+		digistarGponOltOnuConfigTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponOltOnuConfigEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Configuration parameters applying to a single onu stacked on an olt.
+				This profile is auto-created."
+			::= { digistarGponCfg 3 }
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3.1
+		digistarGponOltOnuConfigEntry OBJECT-TYPE
+			SYNTAX DigistarGponOltOnuConfigEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"A row in the gpon olt-onu config table."
+			INDEX { digistarGponOltLinkId, digistarGponOltOnuId }
+			::= { digistarGponOltOnuConfigTable 1 }
+
+		
+		DigistarGponOltOnuConfigEntry ::=
+			SEQUENCE { 
+				digistarGponOltOnuId
+					Integer32,
+				digistarGponOltOnuIfIndex
+					InterfaceIndex,
+				digistarGponOltOnuConfigSerialNoVendorId
+					DisplayString,
+				digistarGponOltOnuConfigSerialNoVendorSpecific
+					DisplayString,
+				digistarGponOltOnuConfigPassword
+					DisplayString,
+				digistarGponOltOnuEquipmentID
+					DisplayString,
+				digistarGponOltOnuVersion
+					DisplayString
+			 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3.1.1
+		digistarGponOltOnuId OBJECT-TYPE
+			SYNTAX Integer32(1..128)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Id the onu on the olt line. "
+			::= { digistarGponOltOnuConfigEntry 1 }
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3.1.2
+		digistarGponOltOnuIfIndex OBJECT-TYPE
+			SYNTAX InterfaceIndex
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"IfIndex of the onu interface stacked on the olt. "
+			::= { digistarGponOltOnuConfigEntry 2 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3.1.3
+		digistarGponOltOnuConfigSerialNoVendorId OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..4))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"This is a string of 4 ascii characters representing the 
+				vendor ID portion of the onu serial number.
+				Example: 'ZNTS' for digistar."
+			DEFVAL { "ZNTS" }
+			::= { digistarGponOltOnuConfigEntry 3 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3.1.4
+		digistarGponOltOnuConfigSerialNoVendorSpecific OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (1..10))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"This is a string of ascii decimal digits representing
+				the vendor-specific portion of the onu serial number."
+			DEFVAL { "0" }
+			::= { digistarGponOltOnuConfigEntry 4 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3.1.5
+		digistarGponOltOnuConfigPassword OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..10))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Password (10 bytes)."
+			DEFVAL { "" }
+			::= { digistarGponOltOnuConfigEntry 5 }
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3.1.6
+		digistarGponOltOnuEquipmentID OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..20))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Equipment ID returned from this Onu."
+			::= { digistarGponOltOnuConfigEntry 6 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.3.1.7
+		digistarGponOltOnuVersion OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..14))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"ONU version returned from this Onu."
+			::= { digistarGponOltOnuConfigEntry 7 }
+
+-----------------------------------------------------------------------
+------ GEM
+-----------------------------------------------------------------------
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.5
+		digistarGponPortConfigTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponPortConfigEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"GEM Port Configurations."
+			::= { digistarGponCfg 5 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.5.1
+		digistarGponPortConfigEntry OBJECT-TYPE
+			SYNTAX DigistarGponPortConfigEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"A row in the gpon port config table."
+			INDEX { digistarGponOltLinkId, digistarGponOltOnuId, digistarGponPortId }
+			::= { digistarGponPortConfigTable 1 }
+
+		
+		DigistarGponPortConfigEntry ::=
+			SEQUENCE { 
+				digistarGponPortId
+					Integer32,
+				digistarGponPortConfigMulticast
+					TruthValue,
+				digistarGponPortConfigEncrypted
+					TruthValue,
+				digistarGponPortConfigDirection
+					INTEGER,
+				digistarGponPortConfigTrafficProfile
+					Unsigned32,
+				digistarGponPortAdminState
+					INTEGER				
+			 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.5.1.1
+		digistarGponPortId OBJECT-TYPE
+			SYNTAX Integer32(0..65536)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"The ID of the gpon-port on the olt."
+			::= { digistarGponPortConfigEntry 1 }
+
+				
+		-- 1.3.6.1.4.1.29450.2.6.1.1.5.1.2
+		digistarGponPortConfigMulticast OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Specifies whether this is a multicast or unicast port.
+				If unicast, only one onu may be given, and the unicast-onu-id
+				field is used. If multicast is true, then the multicast-onu-ids
+				is used to name the onus."
+			DEFVAL { false }
+			::= { digistarGponPortConfigEntry 2 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.5.1.3
+		digistarGponPortConfigEncrypted OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Specifies whether port-id PLOAM messages are encrypted. Must 
+				be false if multicast."
+			DEFVAL { true }
+			::= { digistarGponPortConfigEntry 3 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.5.1.4
+		digistarGponPortConfigDirection OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				down(1),
+				up(2),
+				bidirectional(3)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Direction of data for this port."
+			DEFVAL { bidirectional }
+			::= { digistarGponPortConfigEntry 4 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.1.5.1.5
+		digistarGponPortConfigTrafficProfile OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Index of GEM Port traffic profile for this port.  A zero value indicates 
+				no GEM Port traffic profile has been selected."
+			DEFVAL { 0 }
+			::= { digistarGponPortConfigEntry 5 }
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.1.5.1.6
+		digistarGponPortAdminState OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				up(1),
+				down(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"GEM Port State."
+			DEFVAL { none }
+			::= { digistarGponPortConfigEntry 6 }
+
+
+--****************************************************************************
+-- Status
+--****************************************************************************
+
+-----------------------------------------------------------------------
+------ Olts
+-----------------------------------------------------------------------
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.2
+		digistarGponOltStatusTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponOltStatusEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Current Status of OLT as reported from the Gpon Driver."
+			::= { digistarGponStatus 2 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.2.1
+		digistarGponOltStatusEntry OBJECT-TYPE
+			SYNTAX DigistarGponOltStatusEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Row in the digistarGponOltStatusTable."
+			INDEX { digistarGponOltLinkId }
+			::= { digistarGponOltStatusTable 1 }
+
+		
+		DigistarGponOltStatusEntry ::=
+			SEQUENCE { 
+				digistarGponOltOpticStatus
+					INTEGER,
+				digistarGponOltOpticAlarms
+					BITS,
+				digistarGponOltStatusWord
+					BITS
+			 }
+
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.2.1.5
+		digistarGponOltOpticStatus OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				ok(1),
+				warning(2),
+				alarm(4),
+				sfpnotpresent(8),
+				oltactive(16)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"When the End Of Life(EOL) Alarm bit is set an alarm will be raised. Alarm
+				is set at about 150% of original current.Alarm will be level Major. It
+				will be cleared when the SFP is replaced, or when the Alarm bit is cleared.
+				Warning indication will be provided when user asks for status. Warning is
+				set when EOL is at about 130% original current."
+			::= { digistarGponOltStatusEntry 5 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.2.1.6
+		digistarGponOltOpticAlarms OBJECT-TYPE
+			SYNTAX BITS
+				{
+				tempHigh(0),
+				tempLow(1),
+				vccHigh(2),
+				vccLow(3),
+				txBiasHigh(4),
+				txBiasLow(5),
+				txPwrHigh(6),
+				txPwrLow(7),
+				rxPwrHigh(8),
+				rxPwrLow(9)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Bitmap of alarm conditions present, as reported
+				from the SFP."
+			::= { digistarGponOltStatusEntry 6 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.2.1.7
+		digistarGponOltStatusWord OBJECT-TYPE
+			SYNTAX BITS
+				{
+				noAlarm(0),
+				notused1(1),
+				notused2(2),
+				notused3(3),
+				notused4(4),
+				notused5(5),
+				lossOfSignal(6),
+				notused7(7),
+				notused8(8),
+				outOfService(9),
+				rogueOnu(10),
+				rogueOnuRssi(11),
+				sgmiiGeLinkDown(12)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"The bit-coded OLT status word."
+			::= { digistarGponOltStatusEntry 7 }
+
+-----------------------------------------------------------------------
+------ ONUs
+-----------------------------------------------------------------------
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1
+		digistarGponOnuStatusTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponOnuStatusEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Current status of onu as reported from Gpon driver."
+			::= { digistarGponStatus 1 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1
+		digistarGponOnuStatusEntry OBJECT-TYPE
+			SYNTAX DigistarGponOnuStatusEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Row in the digistarGponOnuStatusTable."
+			INDEX { digistarGponOltLinkId, digistarGponOltOnuId }
+			::= { digistarGponOnuStatusTable 1 }
+
+		
+		DigistarGponOnuStatusEntry ::=
+			SEQUENCE { 
+				digistarGponOnuCurrentStatus
+					INTEGER,
+				digistarGponOnuLastAlarm
+					BITS,
+				digistarGponOnuLastAlarmValue
+					INTEGER,
+				digistarGponOnuLastStatusChangeTime
+					TimeStamp,
+				digistarGponOnuOmciState
+					INTEGER,
+				digistarGponOnuOpticRssi
+					Integer32,
+				digistarGponOntRxPower
+					Integer32,
+				digistarGponOntVersion
+					DisplayString,
+				digistarGponOnuDistance
+					Unsigned32,
+
+				digistarGponOnuAlarmLos
+					INTEGER,
+				digistarGponOnuAlarmLosCount
+					Integer32,
+				digistarGponOnuAlarmLosLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmLof
+                                        INTEGER,
+                                digistarGponOnuAlarmLofCount
+                                        Integer32,
+                                digistarGponOnuAlarmLofLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmDow
+                                        INTEGER,
+                                digistarGponOnuAlarmDowCount
+                                        Integer32,
+                                digistarGponOnuAlarmDowLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmSf
+                                        INTEGER,
+                                digistarGponOnuAlarmSfCount
+                                        Integer32,
+                                digistarGponOnuAlarmSfLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmSd
+                                        INTEGER,
+                                digistarGponOnuAlarmSdCount
+                                        Integer32,
+                                digistarGponOnuAlarmSdLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmLcdg
+                                        INTEGER,
+                                digistarGponOnuAlarmLcdgCount
+                                        Integer32,
+                                digistarGponOnuAlarmLcdgLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmRd
+                                        INTEGER,
+                                digistarGponOnuAlarmRdCount
+                                        Integer32,
+                                digistarGponOnuAlarmRdLastOccurrence
+					TimeStamp,
+
+                                digistarGponOnuAlarmSuf
+                                        INTEGER,
+                                digistarGponOnuAlarmSufCount
+                                        Integer32,
+                                digistarGponOnuAlarmSufLastOccurrence
+					TimeStamp,
+
+                                digistarGponOnuAlarmLoa
+                                        INTEGER,
+                                digistarGponOnuAlarmLoaCount
+                                        Integer32,
+                                digistarGponOnuAlarmLoaLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmDg
+                                        INTEGER,
+                                digistarGponOnuAlarmDgCount
+                                        Integer32,
+                                digistarGponOnuAlarmDgLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmLoam
+                                        INTEGER,
+                                digistarGponOnuAlarmLoamCount
+                                        Integer32,
+                                digistarGponOnuAlarmLoamLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmMem
+                                        INTEGER,
+                                digistarGponOnuAlarmMemCount
+                                        Integer32,
+                                digistarGponOnuAlarmMemLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmPee
+                                        INTEGER,
+                                digistarGponOnuAlarmPeeCount
+                                        Integer32,
+                                digistarGponOnuAlarmPeeLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmDf
+                                        INTEGER,
+                                digistarGponOnuAlarmDfCount
+                                        Integer32,
+                                digistarGponOnuAlarmDfLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmTiw
+                                        INTEGER,
+                                digistarGponOnuAlarmTiwCount
+                                        Integer32,
+                                digistarGponOnuAlarmTiwLastOccurrence
+					TimeStamp,
+
+                                digistarGponOnuAlarmLok
+                                        INTEGER,
+                                digistarGponOnuAlarmLokCount
+                                        Integer32,
+                                digistarGponOnuAlarmLokLastOccurrence
+					TimeStamp,
+
+                                digistarGponOnuAlarmBip
+                                        INTEGER,
+                                digistarGponOnuAlarmBipCount
+                                        Integer32,
+                                digistarGponOnuAlarmBipLastOccurrence
+					TimeStamp,
+				
+				digistarGponOnuAlarmRogue
+                                        INTEGER,
+                                digistarGponOnuAlarmRogueCount
+                                        Integer32,
+                                digistarGponOnuAlarmRogueLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmRxPowerHigh
+                                        INTEGER,
+                                digistarGponOnuAlarmRxPowerHighCount
+                                        Integer32,
+                                digistarGponOnuAlarmRxPowerHighLastOccurrence
+					TimeStamp,
+
+				digistarGponOnuAlarmRxPowerLow
+                                        INTEGER,
+                                digistarGponOnuAlarmRxPowerLowCount
+                                        Integer32,
+                                digistarGponOnuAlarmRxPowerLowLastOccurrence
+					TimeStamp
+
+			 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.1
+		digistarGponOnuCurrentStatus OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				cleared(0),
+				activated(1)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current onu alarm status. Cleared if no alarm is activated."
+			::= { digistarGponOnuStatusEntry 1 }
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.2
+		digistarGponOnuLastAlarm OBJECT-TYPE
+			SYNTAX BITS
+				{
+				noAlarm(0),
+				inactive(1),
+				lossOfSignal(2),
+				lossOfFrame(3),
+				driftOfWindow(4),
+				signalFail(5),
+				signalDegrade(6),
+				lossOfGemChanDelin(7),
+				remoteDefect(8),
+				transmitterFailure(9),
+				startUpFailure(10),
+				lossOfAck(11),
+				dyingGasp(12),
+				lossOfPloamSync(13),
+				messageError(14),
+				physEquipError(15),
+				deactivateFail(16),
+				transmissionInterference(17),
+				lossOfKeySync(18),
+				excessiveBipErrors(19),
+--				excessiveBipErrorsOnuDisabled(19),
+--				excessiveBipErrorsOnuNotDisabled(20),
+				usRxPowerHighError(21),
+				usRxPowerLowError(22),
+				rogueOnu(23)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Last onu MAC Alarm from gpon driver"
+			::= { digistarGponOnuStatusEntry 2 }
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.3
+		digistarGponOnuLastAlarmValue OBJECT-TYPE
+		     SYNTAX INTEGER
+			{
+                	    cleared(0),
+                	    activated(1)
+                	}
+		        MAX-ACCESS  read-only
+		        STATUS      current
+		        DESCRIPTION
+	                	"Value of the Last onu MAC Alarm from gpon driver"
+		
+		    	::= { digistarGponOnuStatusEntry 3 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.4
+		digistarGponOnuLastStatusChangeTime OBJECT-TYPE
+		     SYNTAX TimeStamp
+		     MAX-ACCESS read-only
+		     STATUS current
+		     DESCRIPTION
+			     "Passed time of last alarm occurrence."
+		     ::= { digistarGponOnuStatusEntry 4 }
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.5
+		digistarGponOnuOmciState OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				waiting(1),
+				pending(2),
+				config(3),
+				error(4),
+				done(5),
+				download(6),
+				aborted(7),
+				unknown(8),
+				down(9),
+				noConfig(10),
+				rgComError(11),
+				rgServiceSetupErr(12),
+				omciFailed(13),
+				omciErrAndRgComErr(14),
+				omciErrAndRgServErr(15)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current configuration status for ONU.
+				1. queued for configuration (waiting)
+				2. transitional state before configuration (pending)
+				3. in process of configuration (config)
+				4. unspecified error (error)
+				5. configuration successful (done)
+				6. image download in progress (download)
+				7. image download aborted (aborted)
+				8. state cannot be determined (unknown)
+				9. ONU is down (down)
+				10. no configuration has been attempted (noConfig)
+				11. ONU unreachable for RG configuration (rgComError)
+				12. Some RG commands failed, may impact service 
+				    (rgServiceSetupErr)
+				13. OMCI configuration failed (omciFailed)
+				14. OMCI failed and also ONU unreachable for RG 
+				    (omciErrAndRgComErr)
+				15. OMCI failed and also RG commands failed
+				    (omciErrAndRgServErr)
+				"
+			::= { digistarGponOnuStatusEntry 5 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.6
+		digistarGponOnuOpticRssi OBJECT-TYPE
+			SYNTAX Integer32 (-600..200)
+			UNITS "tenths of dB"
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"RSSI power of the SFP per ONU. The value is in tenths of dB."
+			::= { digistarGponOnuStatusEntry 6 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.7
+		digistarGponOntRxPower OBJECT-TYPE
+			SYNTAX Integer32 (-600..200)
+			UNITS "tenths of dB"
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Rx Power as reported by the ONT. The value is in tenths of dB."
+			::= { digistarGponOnuStatusEntry 7 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.8
+		digistarGponOntVersion OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..14))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"This object defines the version of the ONT as defined by the vendor.
+				The character value '0' indicates that the version information is not
+				available or applicable.
+				"
+			::= { digistarGponOnuStatusEntry 8 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.9
+		digistarGponOnuDistance OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Distance from Olt to Ont in meters, as 
+				computed from Eqd."
+			::= { digistarGponOnuStatusEntry 9 }
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.10
+                digistarGponOnuAlarmLos OBJECT-TYPE
+                        SYNTAX INTEGER
+			{
+				cleared(0),
+                                activated(1)
+			}
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of Signal (LOS) alarm status. This alarm is based on energy detect status of the transceiver (or internal BM-CDR). Typically a LOFi alarm is also detected at this time, and therefore the ONU is deactivated and a snmp trap is sent. The alarm is cleared after a successful ONU activation process."
+                        ::= { digistarGponOnuStatusEntry 10 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.11
+                digistarGponOnuAlarmLosCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of Signal (LOS) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 11 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.12
+                digistarGponOnuAlarmLosLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 12 }
+
+	        -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.13
+                digistarGponOnuAlarmLof OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+				cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of Frame (LOF) alarm status. This alarm is triggered by N consecutive invalid delimiters from ONU. When LOF is detected, the ONU is deactivated and a snmp trap is sent. The alarm is cleared after a successful ONU activation process."
+                        ::= { digistarGponOnuStatusEntry 13 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.14
+                digistarGponOnuAlarmLofCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of Frame (LOF) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 14 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.15
+                digistarGponOnuAlarmLofLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 15 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.16
+                digistarGponOnuAlarmDow OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+				cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Drift of Window (DOW) alarm status. Drift of window of ONU. This alarm is triggered when the average drift detected for ONU exceeds a predefined threshold. The alarm is cleared when the average drift drops below the threshold."
+                        ::= { digistarGponOnuStatusEntry 16 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.17
+                digistarGponOnuAlarmDowCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Drift of Window (DOW) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 17 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.18
+                digistarGponOnuAlarmDowLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 18 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.19
+                digistarGponOnuAlarmSf OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Signal Failure (SF) alarm status. Signal Fail of ONU. BER (ONU bit-error rate) is calculated per interval T. If BER >= BER_SF_threshold, the SF alarm is sent. When SF is detected, the ONU is deactivated."
+                        ::= { digistarGponOnuStatusEntry 19 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.20
+                digistarGponOnuAlarmSfCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Signal Failure (SF) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 20 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.21
+                digistarGponOnuAlarmSfLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 21 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.22
+                digistarGponOnuAlarmSd OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Signal Degrade (SD) alarm status. Signal Degrade ONU. BER (ONU bit-error rate) is calculated per interval T. If BER >= BER_SD_threshold, SD alarm is sent."
+                        ::= { digistarGponOnuStatusEntry 22 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.23
+                digistarGponOnuAlarmSdCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Signal Degrade (SD) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 23 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.24
+                digistarGponOnuAlarmSdLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 24 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.25
+                digistarGponOnuAlarmLcdg OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of GEM Channel Delineation (LCDG) alarm status. Loss of GEM Channel Delineation of ONU. This alarm is triggered by GPON MAC when GEM channel cannot be delineated."
+                        ::= { digistarGponOnuStatusEntry 25 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.26
+                digistarGponOnuAlarmLcdgCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of GEM Channel Delineation (LCDG) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 26 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.27
+                digistarGponOnuAlarmLcdgLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 27 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.28
+                digistarGponOnuAlarmRd OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Remote Defect Indication (RDI) alarm status. Remote Defect Indication of ONU. RDI is reported by an ONU when OLT transmissions are received with defects at the ONU. It is cleared when ONU stops reporting RDI"
+                        ::= { digistarGponOnuStatusEntry 28 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.29
+                digistarGponOnuAlarmRdCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Remote Defect Indication (RDI) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 29 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.30
+                digistarGponOnuAlarmRdLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 30 }
+
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.31
+                digistarGponOnuAlarmSuf OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Start-up Failure (SUF) alarm status. Start-up Failure ONU. If the ONU activation process fails, a SUF notification is sent to the host application, and the ONU state changes to Inactive."
+                        ::= { digistarGponOnuStatusEntry 31 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.32
+                digistarGponOnuAlarmSufCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Start-up Failure (SUF) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 32 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.33
+                digistarGponOnuAlarmSufLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 33 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.34
+                digistarGponOnuAlarmLoa OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of Acknowledge (LOA) alarm status. Loss of Acknowledge from ONU. When ONU does not acknowledge OLT messages, the ONU is deactivated, and a LOA alarm is sent."
+                        ::= { digistarGponOnuStatusEntry 34 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.35
+                digistarGponOnuAlarmLoaCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of Acknowledge (LOA) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 35 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.36
+                digistarGponOnuAlarmLoaLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 36 }
+
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.37
+                digistarGponOnuAlarmDg OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Dying-Gasp (DG) alarm status. Received Dying-Gasp message from ONU."
+                        ::= { digistarGponOnuStatusEntry 37 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.38
+                digistarGponOnuAlarmDgCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Dying-Gasp (DG) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 38 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.39
+                digistarGponOnuAlarmDgLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 39 }
+
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.40
+                digistarGponOnuAlarmLoam OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "PLOAM Loss (LOAM) alarm status. PLOAM loss for ONU. This alarm is triggered when N consecutive PLOAM messages are missing from ONU. When LOAM is detected by the link, the ONU is deactivated. The alarm is cleared after a successful ONU activation process."
+                        ::= { digistarGponOnuStatusEntry 40 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.41
+                digistarGponOnuAlarmLoamCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "PLOAM Loss (LOAM) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 41 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.42
+                digistarGponOnuAlarmLoamLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 42 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.43
+                digistarGponOnuAlarmMem OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Message Error Message (MEM) alarm status. Message Error Message from the ONU. When an unknown PLOAM message is received."
+                        ::= { digistarGponOnuStatusEntry 43 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.44
+                digistarGponOnuAlarmMemCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Message Error Message (MEM) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 44 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.45
+                digistarGponOnuAlarmMemLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 45 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.46
+                digistarGponOnuAlarmPee OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Physical Equipment Error (PEE) alarm status. Physical Equipment Error ONUi (PEE received from ONU) when this message is received."
+                        ::= { digistarGponOnuStatusEntry 46 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.47
+                digistarGponOnuAlarmPeeCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Physical Equipment Error (PEE) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 47 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.48
+                digistarGponOnuAlarmPeeLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 48 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.49
+                digistarGponOnuAlarmDf OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Deactivate ONU/Disable SN Failed (DF) alarm status. If the ONU does not react correctly after three Deactivate_ONU-ID or three Disable_Serial_Number messages, a notification is sent. The ONU state changes to inactive, even if the DFi alarm is set."
+                        ::= { digistarGponOnuStatusEntry 49 }
+                                
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.50
+                digistarGponOnuAlarmDfCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only 
+                        STATUS current
+                        DESCRIPTION
+                                "Deactivate ONU/Disable SN Failed (DF) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 50 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.51
+                digistarGponOnuAlarmDfLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 51 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.52
+                digistarGponOnuAlarmTiw OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Transmission Interference (TiW) alarm status. Transmission Interference Alarm for ONU. This alarm is triggered when the average drift is detected for the ONU exceeds a predefined threshold."
+                        ::= { digistarGponOnuStatusEntry 52 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.53
+                digistarGponOnuAlarmTiwCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Transmission Interference (TiW) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 53 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.54
+                digistarGponOnuAlarmTiwLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 54 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.2.1.1.55
+                digistarGponOnuAlarmLok OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of Key sync (LOK) alarm status. Loss of Key sync with ONU. This alarm is triggered when the key exchange process fails 3 times due to no response to the Request_Key PLOAM message. The alarm is cleared if an Encryption_Key PLOAM message is received or after a successful ONU activation process. When LOK is detected, the ONU is deactivated."
+                        ::= { digistarGponOnuStatusEntry 55 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.56
+                digistarGponOnuAlarmLokCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Loss of Key sync (LOK) alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 56 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.57
+                digistarGponOnuAlarmLokLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 57 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.58
+                digistarGponOnuAlarmBip OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "BIP alarm status. BIP error of the ONU. This indicates excessive number of BIP8 errors during the BER interval."
+                        ::= { digistarGponOnuStatusEntry 58 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.59
+                digistarGponOnuAlarmBipCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "BIP alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 59 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.60
+                digistarGponOnuAlarmBipLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 60 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.61
+                digistarGponOnuAlarmRogue OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Rogue alarm status. Rogue ONU detected."
+                        ::= { digistarGponOnuStatusEntry 61 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.62
+                digistarGponOnuAlarmRogueCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Rogue alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 62 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.63
+                digistarGponOnuAlarmRogueLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 63 }
+
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.64
+                digistarGponOnuAlarmRxPowerHigh OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Rx Power High alarm status. Measured upstream optical power of the ONU received at the OLT (OLT Rx Power or OLT Receive Power) crossed high threshold value."
+                        ::= { digistarGponOnuStatusEntry 64 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.65
+                digistarGponOnuAlarmRxPowerHighCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Rx Power High alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 65 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.66
+                digistarGponOnuAlarmRxPowerHighLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 66 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.67
+                digistarGponOnuAlarmRxPowerLow OBJECT-TYPE
+                        SYNTAX INTEGER
+                        {
+                                cleared(0),
+                                activated(1)
+                        }
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Rx Power Low alarm status. Measured upstream optical power of the ONU received at the OLT (OLT Rx Power or OLT Receive Power) crossed low threshold value."
+                        ::= { digistarGponOnuStatusEntry 67 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.68
+                digistarGponOnuAlarmRxPowerLowCount OBJECT-TYPE
+                        SYNTAX Integer32
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Rx Power Low alarm counter. Amount of times this alarm has been triggered after clear command."
+                        ::= { digistarGponOnuStatusEntry 68 }
+
+                -- 1.3.6.1.4.1.29450.2.6.1.2.1.1.69
+                digistarGponOnuAlarmRxPowerLowLastOccurrence OBJECT-TYPE
+                        SYNTAX TimeStamp
+                        MAX-ACCESS read-only
+                        STATUS current
+                        DESCRIPTION
+                                "Time passed since last triggered time in seconds. Clear command also clear this information."
+                        ::= { digistarGponOnuStatusEntry 69 }
+
+
+
+
+--****************************************************************************
+-- Statistics
+--****************************************************************************
+
+
+-- OLT Statistics
+
+		-- 1.3.6.1.4.1.29450.2.6.1.4.1
+		digistarGponOltStatisticsTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponOltStatisticsEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Per OLT statistics gathered from Broadlight device."
+			::= { digistarGponStatistics 1 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.4.1.1
+		digistarGponOltStatisticsEntry OBJECT-TYPE
+			SYNTAX DigistarGponOltStatisticsEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Per OLT statistics gathered from Broadlight device."
+			INDEX { digistarGponOltLinkId }
+			::= { digistarGponOltStatisticsTable 1 }
+
+		
+		DigistarGponOltStatisticsEntry ::=
+			SEQUENCE { 
+				-- Ds = Downstream
+				digistarGponOltStatDsValidEthPkts
+					Unsigned32,
+				digistarGponOltStatDsCpuPkts
+					Unsigned32,
+				digistarGponOltStatDsPloams
+					Unsigned32,
+				digistarGponOltStatDsTxByte
+					Unsigned32,
+				digistarGponOltStatDsTmRxValidPkts
+					Unsigned32,
+				digistarGponOltStatDsTmRxCrcErrorPkts
+					Unsigned32,
+				digistarGponOltStatDsTmCpuValidPkts
+					Unsigned32,
+				digistarGponOltStatDsTmCpuDroppedPkts
+					Unsigned32,
+				digistarGponOltStatDsTmMacLookupMissPkts
+					Unsigned32,
+				digistarGponOltStatDsTmHmForwardPkts
+					Unsigned32,
+				digistarGponOltStatDsTmHmDroppedPkts
+					Unsigned32,
+				digistarGponOltStatDsTmEgressQFwdPkts
+					Unsigned32,
+				digistarGponOltStatDsTmEgressQCongestionDroppedPkts
+					Unsigned32,
+
+				-- Us = Upstream
+				digistarGponOltStatUsReceivedCpuPkts
+					Unsigned32,
+				digistarGponOltStatUsPonReceivePkts
+					Unsigned32,
+				digistarGponOltStatUsValidPloams
+					Unsigned32,
+				digistarGponOltStatUsValidNonIdlePloams
+					Unsigned32,
+				digistarGponOltStatUsErroredPloams
+					Unsigned32,
+				digistarGponOltStatUsFifoFullPloams
+					Unsigned32,
+				digistarGponOltStatUsInactivePortId
+					Unsigned32,
+				digistarGponOltStatUsTmEgressQFwdPkts
+					Unsigned32,
+				digistarGponOltStatUsTmEgressQCongestionDroppedPkts
+					Unsigned32,
+				digistarGponOltStatUsTmCrcDroppedPkts
+					Unsigned32,
+				digistarGponOltStatUsTmSecurityDroppedPkts
+					Unsigned32,
+				digistarGponOltStatUsMissMsgFailures
+					Unsigned32
+
+				}
+	
+		-- Downstream
+		digistarGponOltStatDsValidEthPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Total number of transmitted packets."
+			::= { digistarGponOltStatisticsEntry 1 }
+
+		digistarGponOltStatDsCpuPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Total number of transmitted CPU packets."
+			::= { digistarGponOltStatisticsEntry 2 }
+
+		digistarGponOltStatDsPloams OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Total number of transmitted PLOAM messages."
+			::= { digistarGponOltStatisticsEntry 3 }
+
+		digistarGponOltStatDsTxByte OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Number of bytes transmitted over the PON link."
+			::= { digistarGponOltStatisticsEntry 4 }
+
+		digistarGponOltStatDsTmRxValidPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM RX valid packets counter."
+			::= { digistarGponOltStatisticsEntry 5 }
+
+		digistarGponOltStatDsTmRxCrcErrorPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM RX CRC error packets counter."
+			::= { digistarGponOltStatisticsEntry 6 }
+
+		digistarGponOltStatDsTmCpuValidPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM CPU valid counter."
+			::= { digistarGponOltStatisticsEntry 7 }
+
+		digistarGponOltStatDsTmCpuDroppedPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM CPU dropped packet."
+			::= { digistarGponOltStatisticsEntry 8 }
+
+		digistarGponOltStatDsTmMacLookupMissPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM MAC lookup miss counter."
+			::= { digistarGponOltStatisticsEntry 9 }
+
+		digistarGponOltStatDsTmHmForwardPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM HM forward counter."
+			::= { digistarGponOltStatisticsEntry 10 }
+
+		digistarGponOltStatDsTmHmDroppedPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM HM drooped counter."
+			::= { digistarGponOltStatisticsEntry 11 }
+
+		digistarGponOltStatDsTmEgressQFwdPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM Egress queue forward counter."
+			::= { digistarGponOltStatisticsEntry 12 }
+
+		digistarGponOltStatDsTmEgressQCongestionDroppedPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM Egress queue congestion dropped counter."
+			::= { digistarGponOltStatisticsEntry 13 }
+
+		-- Upstream
+		digistarGponOltStatUsReceivedCpuPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Received CPU packets."
+			::= { digistarGponOltStatisticsEntry 14 }
+
+		digistarGponOltStatUsPonReceivePkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"PON received packets."
+			::= { digistarGponOltStatisticsEntry 15 }
+
+		digistarGponOltStatUsValidPloams OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Valid PLOAM include idle PLOAMs."
+			::= { digistarGponOltStatisticsEntry 16 }
+
+		digistarGponOltStatUsValidNonIdlePloams OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Valid PLOAM excluding idle PLOAMs."
+			::= { digistarGponOltStatisticsEntry 17 }
+
+		digistarGponOltStatUsErroredPloams OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Error PLOAMs."
+			::= { digistarGponOltStatisticsEntry 18 }
+
+		digistarGponOltStatUsFifoFullPloams OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Dropped PLOAMs due to FIFO full."
+			::= { digistarGponOltStatisticsEntry 19 }
+
+		digistarGponOltStatUsInactivePortId OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Dropped packets due to not configure GEM port."
+			::= { digistarGponOltStatisticsEntry 20 }
+
+		digistarGponOltStatUsTmEgressQFwdPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM egress queue forward packets."
+			::= { digistarGponOltStatisticsEntry 21 }
+
+		digistarGponOltStatUsTmEgressQCongestionDroppedPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM egress queue congestion dropped packets."
+			::= { digistarGponOltStatisticsEntry 22 }
+
+		digistarGponOltStatUsTmCrcDroppedPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM dropped packets due to CRC error."
+			::= { digistarGponOltStatisticsEntry 23 }
+
+		digistarGponOltStatUsTmSecurityDroppedPkts OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TM dropped packets due to security rule."
+			::= { digistarGponOltStatisticsEntry 24 }
+
+		digistarGponOltStatUsMissMsgFailures OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"MAC learning failures due to FIFO full."
+			::= { digistarGponOltStatisticsEntry 25 }
+
+-----------------------------------------------------------------------
+------ ONU Statistics
+-----------------------------------------------------------------------
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.4.2
+		digistarGponOnuStatsTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponOnuStatsEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Current statistics of GEM Ports as reported from Gpon driver."
+			::= { digistarGponStatistics 2 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.4.2.1
+		digistarGponOnuStatsEntry OBJECT-TYPE
+			SYNTAX DigistarGponOnuStatsEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Row in the digistarGponOnuStatsTable."
+			INDEX { digistarGponOltLinkId, digistarGponOltOnuId, digistarGponGEMPort }
+			::= { digistarGponOnuStatsTable 1 }
+
+		
+		DigistarGponOnuStatsEntry ::=
+			SEQUENCE { 
+				digistarGponGEMPort
+					Integer32,
+				digistarGponOnuIntervalEndTime
+					Unsigned32,
+				digistarGponOnuThresholdDataPointer
+					Unsigned32,
+				digistarGponOnuTxGemFrames
+					Unsigned32,
+				digistarGponOnuRxGemFrames
+					Unsigned32,
+				digistarGponOnuTxPayloadBytes
+					Counter64,
+				digistarGponOnuRxPayloadBytes
+					Counter64,
+				digistarGponOnuEncryptKeyErrors
+					Unsigned32
+			 }
+
+		digistarGponGEMPort OBJECT-TYPE
+			SYNTAX Integer32(0..4095)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"ONU GEM port on the olt line. "
+			::= { digistarGponOnuStatsEntry 1 }
+
+
+		digistarGponOnuIntervalEndTime OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Interval End Time. "
+			::= { digistarGponOnuStatsEntry 2 }
+
+		digistarGponOnuThresholdDataPointer OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Threshold Data Pointer. "
+			::= { digistarGponOnuStatsEntry 3 }
+
+		digistarGponOnuTxGemFrames OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TX GEM Frames. "
+			::= { digistarGponOnuStatsEntry 4 }
+
+		digistarGponOnuRxGemFrames OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"RX GEM Frames. "
+			::= { digistarGponOnuStatsEntry 5 }
+
+		digistarGponOnuTxPayloadBytes OBJECT-TYPE
+			SYNTAX Counter64
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"TX Payload Bytes. "
+			::= { digistarGponOnuStatsEntry 6 }
+
+		digistarGponOnuRxPayloadBytes OBJECT-TYPE
+			SYNTAX Counter64
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"RX Payload Bytes. "
+			::= { digistarGponOnuStatsEntry 7 }
+
+		digistarGponOnuEncryptKeyErrors OBJECT-TYPE
+			SYNTAX Unsigned32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Encryption Key Errors. "
+			::= { digistarGponOnuStatsEntry 8 }
+
+--****************************************************************************
+-- Software Image
+--****************************************************************************
+
+
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1
+		digistarGponOmciOnuImageUpgradeTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarGponOmciOnuImageUpgradeEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"This table is used to perform ONU software upgrades.
+				There is one table entry for each ONU.
+				Each ONU is addressed by it's ifIndex."
+			::= { digistarGponSwImage 1 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1
+		digistarGponOmciOnuImageUpgradeEntry OBJECT-TYPE
+			SYNTAX DigistarGponOmciOnuImageUpgradeEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"An entry for one ONU."
+			INDEX { digistarGponOltLinkId, digistarGponOltOnuId
+				-- digistarGponOltOnuIfIndex 
+				}
+			::= { digistarGponOmciOnuImageUpgradeTable 1 }
+
+		
+		DigistarGponOmciOnuImageUpgradeEntry ::=
+			SEQUENCE { 
+				digistarGponOmciOnuImageUpgradeAction
+					INTEGER,
+				digistarOnuOmciImageUpgradeFilename
+					DisplayString,
+				digistarGponOmciOnuImageUpgradePartition
+					INTEGER,
+				digistarOnuOmciImageUpgradeImageVersionPartition0
+					DisplayString,
+				digistarOnuOmciImageUpgradeImageVersionPartition1
+					DisplayString,
+				digistarOnuOmciImageUpgradeIsCommittedPartition0
+					INTEGER,
+				digistarOnuOmciImageUpgradeIsCommittedPartition1
+					INTEGER,
+				digistarOnuOmciImageUpgradeIsActivatedPartition0
+					INTEGER,
+				digistarOnuOmciImageUpgradeIsActivatedPartition1
+					INTEGER,
+				digistarOnuOmciImageUpgradeIsValidPartition0
+					INTEGER,
+				digistarOnuOmciImageUpgradeIsValidPartition1
+					INTEGER,
+				digistarOnuOmciImageUpgradeDownloadStatus
+					INTEGER,
+--				digistarGponOmciOnuImageUpgradeModel
+--					DisplayString,
+				digistarGponOmciOnuImageUpgradeStartTime
+					TimeStamp,
+--				digistarGponOmciOnuImageUpgradeWillBeActivated
+--					TruthValue,
+--				digistarGponOmciOnuImageUpgradeWillBeCommitted
+--					TruthValue,
+--				digistarGponOmciOnuImageUpgradeType
+--					INTEGER,
+				digistarGponOmciOnuImageDownloadProgressPercentage
+					INTEGER
+			 }
+
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.1
+		digistarGponOmciOnuImageUpgradeAction OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				download(1),
+				activate(2),
+				commit(3),
+				downloadActivate(4),
+				downloadActivateCommit(5),
+				abortDownload(6),
+				activateCommit(7)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Which software upgrade action to perform."
+			DEFVAL { none }
+			::= { digistarGponOmciOnuImageUpgradeEntry 1 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.2
+		digistarOnuOmciImageUpgradeFilename OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..64))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Name of file to be loaded downloaded to ONU.
+				Required on download actions."
+			::= { digistarGponOmciOnuImageUpgradeEntry 2 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.3
+		digistarGponOmciOnuImageUpgradePartition OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				partitionNumber0(1),
+				partitionNumber1(2)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Optional on all actions.  Indicates which partition or 
+				'none'in which case default is to use inactive partition
+				for download or activate action, or to the uncommitted 
+				partion for commit action.
+				On a read, returns the partition used for current or 
+				latest upgrade."
+			DEFVAL { none }
+			::= { digistarGponOmciOnuImageUpgradeEntry 3 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.4
+		digistarOnuOmciImageUpgradeImageVersionPartition0 OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..64))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Version information for s/w image loaded into partition 0."
+			::= { digistarGponOmciOnuImageUpgradeEntry 4 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.5
+		digistarOnuOmciImageUpgradeImageVersionPartition1 OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..64))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Version information for s/w image loaded into partition 1."
+			::= { digistarGponOmciOnuImageUpgradeEntry 5 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.6
+		digistarOnuOmciImageUpgradeIsCommittedPartition0 OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				true(1),
+				false(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current commit status for partition 0."
+			::= { digistarGponOmciOnuImageUpgradeEntry 6 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.7
+		digistarOnuOmciImageUpgradeIsCommittedPartition1 OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				true(1),
+				false(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current commit status for partition 1."
+			::= { digistarGponOmciOnuImageUpgradeEntry 7 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.8
+		digistarOnuOmciImageUpgradeIsActivatedPartition0 OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				true(1),
+				false(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current activated status for partition 0."
+			::= { digistarGponOmciOnuImageUpgradeEntry 8 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.9
+		digistarOnuOmciImageUpgradeIsActivatedPartition1 OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				true(1),
+				false(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current activated status for partition 1."
+			::= { digistarGponOmciOnuImageUpgradeEntry 9 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.10
+		digistarOnuOmciImageUpgradeIsValidPartition0 OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				true(1),
+				false(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current valid status for partition 0."
+			::= { digistarGponOmciOnuImageUpgradeEntry 10 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.11
+		digistarOnuOmciImageUpgradeIsValidPartition1 OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				true(1),
+				false(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current valid status for partition 0."
+			::= { digistarGponOmciOnuImageUpgradeEntry 11 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.12
+		digistarOnuOmciImageUpgradeDownloadStatus OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				queued(1),
+				noUpgrade(2),
+				downloading(3),
+				complete(4),
+				error(5),
+				aborted(6),
+				fileError(7),
+				downloaded(8)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Current s/w image download status."
+			::= { digistarGponOmciOnuImageUpgradeEntry 12 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.13
+--		digistarGponOmciOnuImageUpgradeModel OBJECT-TYPE
+--			SYNTAX DisplayString (SIZE (0..20))
+--			MAX-ACCESS read-only
+--			STATUS current
+--			DESCRIPTION
+--				"Model id read from this onu."
+--			::= { digistarGponOmciOnuImageUpgradeEntry 13 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.14
+		digistarGponOmciOnuImageUpgradeStartTime OBJECT-TYPE
+			SYNTAX TimeStamp
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Start time (sysUpTime) of most recent upgrade."
+			::= { digistarGponOmciOnuImageUpgradeEntry 14 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.15
+--		digistarGponOmciOnuImageUpgradeWillBeActivated OBJECT-TYPE
+--			SYNTAX TruthValue
+--			MAX-ACCESS read-only
+--			STATUS current
+--			DESCRIPTION
+--				"If true, the downloaded image will be activated when
+--				download completes."
+--			::= { digistarGponOmciOnuImageUpgradeEntry 15 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.16
+--		digistarGponOmciOnuImageUpgradeWillBeCommitted OBJECT-TYPE
+--			SYNTAX TruthValue
+--			MAX-ACCESS read-only
+--			STATUS current
+--			DESCRIPTION
+--				"If true, this image will be committed on successful activation."
+--			::= { digistarGponOmciOnuImageUpgradeEntry 16 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.17
+--		digistarGponOmciOnuImageUpgradeType OBJECT-TYPE
+--			SYNTAX INTEGER
+--				{
+--				none(0),
+--				manual(1),
+--				auto(2),
+--				bulk(3)
+--				}
+--			MAX-ACCESS read-only
+--			STATUS current
+--			DESCRIPTION
+--				"Indicates the reason for the upgrade."
+--			::= { digistarGponOmciOnuImageUpgradeEntry 17 }
+
+		
+		-- 1.3.6.1.4.1.29450.2.6.1.3.1.1.18
+		digistarGponOmciOnuImageDownloadProgressPercentage OBJECT-TYPE
+			SYNTAX INTEGER (0..100)
+			UNITS "percent"
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Image download progress.  This object is only valid during image download."
+			DEFVAL { 0 }
+			::= { digistarGponOmciOnuImageUpgradeEntry 18 }
+
+
+--****************************************************************************
+-- Notifications
+--****************************************************************************
+
+
+		digistarGponSerialNumberFound NOTIFICATION-TYPE
+			OBJECTS { digistarGponSerialNoVendorId,digistarGponSerialNoVendorSpecific }
+			STATUS current
+			DESCRIPTION 
+				"Notification that an ONU serial number has been
+				discovered."
+			::= { digistarGponTraps 1 }
+
+		digistarGponOnuAlarm NOTIFICATION-TYPE
+			OBJECTS {digistarGponOltLinkId, digistarGponOltOnuId, digistarGponOnuLastAlarm, digistarGponOnuLastAlarmValue }
+			STATUS current
+			DESCRIPTION 
+				"One of the GPON MAC alarm conditions is present for the
+				specified ONU."
+			::= { digistarGponTraps 2 }
+
+		digistarGponOltStatusWordTrap NOTIFICATION-TYPE
+			OBJECTS { digistarGponOltLinkId, digistarGponOltStatusWord }
+			STATUS current
+			DESCRIPTION 
+				"Change in one of the gpol olt status word bits has been detected."
+			::= { digistarGponTraps 3 }
+
+		digistarGponRogueOnuTrap NOTIFICATION-TYPE
+			OBJECTS { digistarGponOltLinkId, digistarGponOltStatusWord } --digistarGponAllocIdIndex
+			STATUS current
+			DESCRIPTION 
+				"A rogue ONU has been detected on this OLT
+				by the background process"
+			::= { digistarGponTraps 6 }
+
+		digistarGponRssiRogueOnuTrap NOTIFICATION-TYPE
+			OBJECTS { digistarGponOltLinkId, digistarGponOltOnuId, digistarGponOltStatusWord }
+			STATUS current
+			DESCRIPTION 
+				"Rogue ONU has been detected by RSSI process
+				on this OLT."
+			::= { digistarGponTraps 7 }
+		
+END
+
+

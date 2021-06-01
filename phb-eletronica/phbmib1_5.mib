@@ -1,0 +1,1472 @@
+PHB DEFINITIONS ::= BEGIN
+    IMPORTS
+    OBJECT-TYPE
+        FROM RFC-1212
+    enterprises
+        FROM RFC1155-SMI
+    DisplayString
+        FROM RFC1213-MIB
+    TRAP-TYPE
+        FROM RFC-1215;
+
+
+    phbMIB OBJECT IDENTIFIER ::= { enterprises 28636 }
+
+    --MODULE-IDENTITY
+    --LAST-UPDATED        "200708131624Z"
+    --ORGANIZATION        "PHB Eletronica Ltda"
+    --CONTACT-INFO        "PHB Eletronica Ltda.
+    --Tel.: +55 11 38358300
+    --Fax: +55 11 38358019
+    --
+    --emai: engenharia @phb.com.br"
+    --DESCRIPTION         ""
+    --REVISION            "200708131628Z"
+    --DESCRIPTION         "0"
+    ident OBJECT IDENTIFIER ::= { phbMIB 1 }
+
+    identManufacturer OBJECT-TYPE
+        SYNTAX              DisplayString (SIZE(0..31))
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The name of the equipment manufacturer."
+        ::= { ident 1 }
+
+    identModel OBJECT-TYPE
+        SYNTAX              DisplayString (SIZE(0..31))
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "PHB Model designation."
+        ::= { ident 2 }
+
+    identControllerFirmwareVersion OBJECT-TYPE
+        SYNTAX              DisplayString (SIZE(0..31))
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The firmware (software) version of the controller."
+        ::= { ident 3 }
+
+    identName OBJECT-TYPE
+        SYNTAX              DisplayString (SIZE(0..63))
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "The name of the power plant. This object should
+                            be set by the administrator."
+        ::= { ident 4 }
+
+    identControlUnitSerialNumber OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Control Unit Serial Number."
+        ::= { ident 5 }
+
+    identRectifierSerialNumbers OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Serial Number of the first 12 Rectifiers monitored
+                            from Control Unit. XXXXX means that the RU isn't
+                            communicating."
+        ::= { ident 6 }
+
+    identAgentSerialNumber OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "SNMP Agent Serial Number."
+        ::= { ident 7 }
+
+    identRectifierSerialNumbers2 OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Serial Number from 13 to 24 (12 RUs) Rectifiers
+                            monitored from Control Unit. XXXXX means that
+                            the RU isn't communicating."
+        ::= { ident 8 }
+
+    identRectifierSerialNumbers3 OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Serial Number from 25 to 36 (12 RUs) Rectifiers
+                            monitored from Control Unit. XXXXX means that
+                            the RU isn't communicating."
+        ::= { ident 9 }
+
+    identRectifierSerialNumbers4 OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Serial Number from 37 to 48 (12 RUs) Rectifiers
+                            monitored from Control Unit. XXXXX means that
+                            the RU isn't communicating."
+        ::= { ident 10 }
+
+    systemMeasures OBJECT IDENTIFIER ::= { phbMIB 2 }
+
+    systemOutputVoltage OBJECT-TYPE
+        SYNTAX              INTEGER (-5000..5000)
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system output voltage in
+                            units of 0.1V DC. Range -500V to +500V."
+        ::= { systemMeasures 1 }
+
+    systemInputVoltageA OBJECT-TYPE
+        SYNTAX              INTEGER (0..1000)
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system input voltage (Phase
+                            A) in units of 1V RMS, in single phase system
+                            this phase is the input voltage. Range between
+                            0 to +500V. For Remote Power Feeding this measure
+                            is associated with the DC input A. In units of
+                            0.1V DC. Range 0V to +1000V."
+        ::= { systemMeasures 2 }
+
+    systemInputVoltageB OBJECT-TYPE
+        SYNTAX              INTEGER (0..1000)
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system input voltage (Phase
+                            B) in units of 1V RMS. Range between 0 to +500V.
+                            For Remote Power Feeding this measure is associated
+                            with the DC input B. In units of 0.1V DC. Range
+                            0V to +1000V."
+        ::= { systemMeasures 3 }
+
+    systemInputVoltageC OBJECT-TYPE
+        SYNTAX              INTEGER (0..500)
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system input voltage (Phase
+                            C) in units of 1V RMS. Range between 0 to +500V."
+        ::= { systemMeasures 4 }
+
+    systemBatteryCurrent OBJECT-TYPE
+        SYNTAX              INTEGER
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system battery current in
+                            units of 0.1A. Range between -5kA to +5kA."
+        ::= { systemMeasures 5 }
+
+    systemLoadCurrent OBJECT-TYPE
+        SYNTAX              INTEGER (0..100000)
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system load current in units
+                            of 0.1A. Range between 0 to +10kA."
+        ::= { systemMeasures 6 }
+
+    systemBatteryTemperature OBJECT-TYPE
+        SYNTAX              INTEGER (-125..125)
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system battery temperature
+                            in units of 1C. Range between -125C to +125C.
+                            The value 999 means that the temperature sensor
+                            is disconnected or not working."
+        ::= { systemMeasures 7 }
+
+    systemInternalTemperature OBJECT-TYPE
+        SYNTAX              INTEGER (-125..125)
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system internal temperature
+                            in units of 1C. Range between -125C to +125C.
+                            The value 999 means that the temperature sensor
+                            is disconnected or not working."
+        ::= { systemMeasures 8 }
+
+    systemRectifierCurrents OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system RU current in units
+                            of 0.1A. Range between 0 to 99.9A (0 to 999).
+                            The first 18 RU currents monitored from Control
+                            Unit. XXX means that the RU isn't communicating."
+        ::= { systemMeasures 9 }
+
+    systemBatteryCapacity OBJECT-TYPE
+        SYNTAX              INTEGER (0..150)
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system Battery Capacity in
+                            units of 1%. Range between 0% to 150%. The value
+                            999 means that the Battery Capacity is not ready
+                            to be read."
+        ::= { systemMeasures 10 }
+
+    systemRectifierCurrents2 OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system RU current in units
+                            of 0.1A. Range between 0 to 99.9A (0 to 999).
+                            RU measured positions from 19 to 36 (18 RUs),
+                            monitored from Control Unit. XXX means that the
+                            RU isn't communicating."
+        ::= { systemMeasures 11 }
+
+    systemRectifierCurrents3 OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the system RU current in units
+                            of 0.1A. Range between 0 to 99.9A (0 to 999).
+                            RU measured positions from 37 to 48 (12 RUs),
+                            monitored from Control Unit. XXX means that the
+                            RU isn't communicating."
+        ::= { systemMeasures 12 }
+
+    systemDCDCOutputVoltagesA OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the DCDC (A) converters output
+                            voltages in units of 1V RMS. Range between 0
+                            to +500V. Up to 16 DCDC output voltges can be
+                            measured, XXX means that the DCDC isn't communicating.
+                            with the controller. For Power Remote Feeding
+                            applications this measure is associated with
+                            A DCDC central converters.
+                            
+                            A central module it is composed by 2 DCDC converters
+                            A and B. ."
+        ::= { systemMeasures 13 }
+
+    systemDCDCOutputVoltagesB OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the DCDC (B) converters output
+                            voltages in units of 1V RMS. Range between 0
+                            to +500V. Up to 16 DCDC output voltges can be
+                            measured, XXX means that the DCDC isn't communicating.
+                            with the controller. For Power Remote Feeding
+                            applications this measure is associated with
+                            B DCDC central converters.
+                            
+                            A central module it is composed by 2 DCDC converters
+                            A and B."
+        ::= { systemMeasures 14 }
+
+    systemDCDCOutputCurrentsA OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the DCDC (A) converters output
+                            currents in units of 0.1A. Range between 0 to
+                            999.9A (0 to 999). The first 16 DCDC converters
+                            currents monitored from Control Unit. XXXX means
+                            that the converter isn't communicating. Range
+                            between 0 to 999.9A. . For Power Remote Feeding
+                            applications this measure is associated with
+                            A DCDC central converters and must be consider
+                            the unit mA. A central module it is composed
+                            by 2 DCDC converters A and B in one module."
+        ::= { systemMeasures 15 }
+
+    systemDCDCOutputCurrentsB OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "The magnitude of the DCDC (B) converters output
+                            currents in units of 0.1A. Range between 0 to
+                            999.9A (0 to 999). The first 16 DCDC converters
+                            currents monitored from Control Unit. XXXX means
+                            that the converter isn't communicating. Range
+                            between 0 to 999.9A. . For Power Remote Feeding
+                            applications this measure is associated with
+                            B DCDC central converters and must be consider
+                            the unit mA. A central module it is composed
+                            by 2 DCDC converters A and B in one module."
+        ::= { systemMeasures 16 }
+
+    phbMIBConformance OBJECT IDENTIFIER ::= { phbMIB 3 }
+
+    phbMIBGroups OBJECT IDENTIFIER ::= { phbMIBConformance 1 }
+
+    phbAllObjects OBJECT IDENTIFIER ::= { phbMIBGroups 1 }
+
+    commands OBJECT IDENTIFIER ::= { phbMIB 4 }
+
+    cmdReset OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Reset Command Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { commands 1 }
+
+    cmdRelay1Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 1 Control. (=1)ON (=2)OFF (=3)UNUSED  
+                            ON - Contacts C-NC open, C-NO short
+                            OFF - Contacts C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 2 }
+
+    cmdRelay2Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 2 Control. (=1)ON (=2)OFF (=3)UNUSED ON
+                            - Contacts C-NC open, C-NO short OFF - Contacts
+                            C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 3 }
+
+    cmdRelay3Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 3 Control. (=1)ON (=2)OFF (=3)UNUSED ON
+                            - Contacts C-NC open, C-NO short OFF - Contacts
+                            C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 4 }
+
+    cmdRelay4Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 4 Control. (=1)ON (=2)OFF (=3)UNUSED ON
+                            - Contacts C-NC open, C-NO short OFF - Contacts
+                            C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 5 }
+
+    cmdRelay5Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 5 Control. (=1)ON (=2)OFF (=3)UNUSED ON
+                            - Contacts C-NC open, C-NO short OFF - Contacts
+                            C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 6 }
+
+    cmdRelay6Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 6 Control. (=1)ON (=2)OFF (=3)UNUSED ON
+                            - Contacts C-NC open, C-NO short OFF - Contacts
+                            C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 7 }
+
+    cmdRelay7Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 7 Control. (=1)ON (=2)OFF (=3)UNUSED ON
+                            - Contacts C-NC open, C-NO short OFF - Contacts
+                            C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 8 }
+
+    cmdRelay8Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 8 Control. (=1)ON (=2)OFF (=3)UNUSED ON
+                            - Contacts C-NC open, C-NO short OFF - Contacts
+                            C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 9 }
+
+    cmdRelay9Control OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-write
+        STATUS              mandatory
+        DESCRIPTION         "Relay 9 Control. (=1)ON (=2)OFF (=3)UNUSED ON
+                            - Contacts C-NC open, C-NO short OFF - Contacts
+                            C-NC short, C-NO open
+                            
+                            Obs.: This control is only avaliable when the
+                            relay is not associated with any alarm."
+        ::= { commands 10 }
+
+    alarms OBJECT IDENTIFIER ::= { phbMIB 5 }
+
+    alarmInput OBJECT IDENTIFIER ::= { alarms 1 }
+
+    almSpare1 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 1 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 1 }
+
+    almSpare2 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 2 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 2 }
+
+    almSpare3 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 3 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 3 }
+
+    almSpare4 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 4 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 4 }
+
+    almSpare5 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 5 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 5 }
+
+    almSpare6 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 6 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 6 }
+
+    almSpare7 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 7 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 7 }
+
+    almSpare8 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 8 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 8 }
+
+    almSpare9 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 9 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 9 }
+
+    almSpare10 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Spare Alarm 10 Status. (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmInput 10 }
+
+    alarmOutput OBJECT IDENTIFIER ::= { alarms 2 }
+
+    almMainsFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Mains Fail Status. It is ON when Mains Input Voltage
+                            is out of range. In some systems it takes 60s
+                            to confirm that Mains is OK.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 1 }
+
+    alm1RUFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "1 RU Fail Status. It is ON when only ONE Rectifier
+                            fails.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 2 }
+
+    almMore1RUFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "More than 1 RU Status. It is ON when MORE THAN
+                            ONE Rectifier fails.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 3 }
+
+    almLVD1 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "LVD 1 Alarm Status. It is ON when the under voltage
+                            disconnect happens.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 4 }
+
+    almBatOnDischarge OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Battery On Discharge Alarm Status. It is ON when
+                            the Battery Voltage is under the configured value
+                            of Battery ON Discharge.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 5 }
+
+    almBreakerOpen OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Breaker / Fuse Open Alarm Status. It is ON when
+                            one or more Breaker(s) / Fuse(s) are open.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 6 }
+
+    almDCOverVoltage OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "DC Over Voltage Alarm Status. It is ON when the
+                            output voltage is higher than the configured
+                            value of DC Over Voltage.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 7 }
+
+    almControlUnitFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Control Unit Fail Alarm Status. It is ON when
+                            the Control Unit fails.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 8 }
+
+    almBatOnCharge OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Battery On Charge Alarm Status. It is ON when
+                            the battery is on charge, in this condition the
+                            output voltage changes to equalize voltage.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 9 }
+
+    almHighLowTemp OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "High / LowTemperature Alarm Status. It is ON when
+                            the internal sensor temperature is higher / lower
+                            than the configured values.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 10 }
+
+    almShelterFanFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Shelter Fan Fail Alarm Status. It is ON when the
+                            shelter fan(s) fail(s).
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 11 }
+
+    almUrgent OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Urgent Alarm Status. It is ON when an urgent event
+                            happens.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 12 }
+
+    almNotUrgent OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Not Urgent Alarm Status. It is ON when a not urgent
+                            event happens.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 13 }
+
+    almContactor1Fail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Contactor / Relay Alarm Status. It is ON when
+                            the connection / disconnection circuit 1 fails.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 14 }
+
+    almCASensorFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "CA Sensor Alarm Status. It is ON when the CA Sensor
+                            (CA Voltimeter) fails.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 15 }
+
+    almIBTSensorFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Current Battery Sensor Alarm Status. It is ON
+                            when the IBT Sensor circuit fails.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 16 }
+
+    maintenance OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Maintenance Alarm Status. It is ON when the quantity
+                            of connected rectifiers is different from the
+                            configured rectifiers.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 17 }
+
+    almBatteryFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Battery Alarm Status. It is ON when it happens
+                            a fail with Battery (String / Bank).
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 18 }
+
+    almBatteryTest OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Battery Test Alarm Status. It is ON when the Battery
+                            is being testing.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 19 }
+
+    almLVD2 OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "LVD 2 Alarm Status. It is ON when the under voltage
+                            disconnect happens.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 20 }
+
+    almCANFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "CAN Bus Alarm Status. It is ON when it happens
+                            a fail with CAN Bus.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 21 }
+
+    almUSBFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "USB Alarm Status. It is ON when it happens a fail
+                            with USB interface.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 22 }
+
+    almEthernetFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Ethernet Alarm Status. It is ON when it happens
+                            a fail with Ethernet interface.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 23 }
+
+    almRS232Fail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "RS232 Alarm Status. It is ON when it happens a
+                            fail with RS232 interface.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 24 }
+
+    almRS485Fail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "RS485 Alarm Status. It is ON when it happens a
+                            fail with RS485 interface.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 25 }
+
+    almContactor2Fail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Contactor / Relay Alarm Status. It is ON when
+                            the connection / disconnection circuit 2 fails.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 26 }
+
+    almSymLow OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Symmetry Battery Volatge Low Alarm Status. It
+                            is ON when the battery block voltage is out of
+                            range of the battery block average voltage. It
+                            has lower severity.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 27 }
+
+    almSymHigh OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Symmetry Battery Volatge High Alarm Status. It
+                            is ON when the battery block voltage is out of
+                            range of the battery block average voltage. It
+                            has higher severity.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 28 }
+
+    almFloatHigh OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Float (Output) Voltage High Alarm Status. It is
+                            ON when the output voltage is higher than the
+                            configured value.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 29 }
+
+    almFloatLow OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Float (Output) Voltage Low Alarm Status. It is
+                            ON when the output voltage is lower than the
+                            configured value.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 30 }
+
+    almDeltaBatCurrent OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Delta Battery Current Alarm Status. It is ON when
+                            the difference (delta) of current between battery
+                            strings is higher than the configured value.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 31 }
+
+    almTempSensFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Temperature Sensor Alarm Status. It is ON when
+                            the one or more temperature sensor(s) circuit
+                            fails.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 32 }
+
+    almDCDCcentral OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "DCDC (Central / Step Up) Converter Fail Alarm
+                            Status. It is ON when one or more DCDC Converters
+                            fail. For Remote Power Feeding application this
+                            failure is associated with central module.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 33 }
+
+    almDCDCremote OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "DCDC (Remote / Step Down) Converter Fail Alarm
+                            Status. It is ON when one or more DCDC Converters
+                            fail. For Remote Power Feeding application this
+                            failure is associated with remote module.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 34 }
+
+    almInverterFail OBJECT-TYPE
+        SYNTAX              INTEGER {
+                                on( 1 ),
+                                off( 2 ),
+                                unused( 3 )
+                            }
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "Inverter Fail Alarm Status. It is ON when one
+                            or more Inverters (DC/AC) fail.
+                            
+                            (=1)ON (=2)OFF (=3)UNUSED"
+        ::= { alarmOutput 35 }
+
+    trapvar OBJECT IDENTIFIER ::= { phbMIB 6 }
+
+    trapmessage OBJECT-TYPE
+        SYNTAX              DisplayString
+        ACCESS              read-only
+        STATUS              mandatory
+        DESCRIPTION         "This OID provide a mean to send message through
+                            Traps.
+                            
+                            It will answer 0 to a GET command."
+        ::= { trapvar 1 }
+
+
+    evUrgent TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almUrgent
+                            }
+        DESCRIPTION         "SEVERE: Sends a trap when an Urgent event happens."
+        ::= 1
+
+    evNotUrgent TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almNotUrgent
+                            }
+        DESCRIPTION         "WARNING: Sends a trap when a Not Urgent event happens"
+        ::= 2
+
+    evSpareAlarm1 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare1
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 1 happens."
+        ::= 3
+
+    evSpareAlarm2 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare2
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 2 happens."
+        ::= 4
+
+    evSpareAlarm3 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare3
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 3 happens."
+        ::= 5
+
+    evSpareAlarm4 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare4
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 4 happens."
+        ::= 6
+
+    evSpareAlarm5 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare5
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 5 happens."
+        ::= 7
+
+    evSpareAlarm6 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare6
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 6 happens."
+        ::= 8
+
+    evSpareAlarm7 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare7
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 7 happens."
+        ::= 9
+
+    evSpareAlarm8 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare8
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 8 happens."
+        ::= 10
+
+    evSpareAlarm9 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare9
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 9 happens."
+        ::= 11
+
+    evSpareAlarm10 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSpare10
+                            }
+        DESCRIPTION         "Send a trap when a Spare Alarm 10 happens."
+        ::= 12
+
+    evalmMainsFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almMainsFail
+                            }
+        DESCRIPTION         "Send a trap when the Mains Fail Alarm happens."
+        ::= 13
+
+    evalm1RUFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                alm1RUFail
+                            }
+        DESCRIPTION         "Send a trap when the 1 RU Fail Alarm happens."
+        ::= 14
+
+    evalmMore1RUFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almMore1RUFail
+                            }
+        DESCRIPTION         "Send a trap when the More than 1 RU Fail Alarm happens."
+        ::= 15
+
+    evalmLVD1 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almLVD1
+                            }
+        DESCRIPTION         "Send a trap when the LVD 1 alarm happens."
+        ::= 16
+
+    evalmBatOnDischarge TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almBatOnDischarge
+                            }
+        DESCRIPTION         "Send a trap when the Battery on Discharge Alarm happens."
+        ::= 17
+
+    evalmBreakerOpen TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almBreakerOpen
+                            }
+        DESCRIPTION         "Send a trap when the Breaker Open Alarm happens."
+        ::= 18
+
+    evalmDCOverVoltge TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almDCOverVoltage
+                            }
+        DESCRIPTION         "Send a trap when the DC Output Overvoltage Alarm happens."
+        ::= 19
+
+    evalmControlUnitFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almControlUnitFail
+                            }
+        DESCRIPTION         "Send a trap when the Control Unit Alarm happens."
+        ::= 20
+
+    evalmBatOnCharge TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almBatOnCharge
+                            }
+        DESCRIPTION         "Send a trap when the Battery on Charge Alarm happens."
+        ::= 21
+
+    evalmHighLowTemp TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almHighLowTemp
+                            }
+        DESCRIPTION         "Send a trap when the High / Low Temperature Alarm happens."
+        ::= 22
+
+    evalmShelterFanFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almShelterFanFail
+                            }
+        DESCRIPTION         "Send a trap when the Shelter Fan Fail Alarm happens."
+        ::= 23
+
+    evalmContactor1Fail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almContactor1Fail
+                            }
+        DESCRIPTION         "Send a trap when the Contator 1 Fail Alarm happens."
+        ::= 24
+
+    evalmCASensorFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almCASensorFail
+                            }
+        DESCRIPTION         "Send a trap when the CA (Input Voltage) Sensor Fail
+                             Alarm happens."
+        ::= 25
+
+    evIBTSensorFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almIBTSensorFail
+                            }
+        DESCRIPTION         "Send a trap when the Current Battery Sensor Fail Alarm
+                             happens."
+        ::= 26
+
+    evmaintenance TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                maintenance
+                            }
+        DESCRIPTION         "Send a trap when the Maintenance Alarm happens."
+        ::= 27
+
+    evalmLVD2 TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almLVD2
+                            }
+        DESCRIPTION         "Send a trap when the LVD 2 alarm happens."
+        ::= 28
+
+    evalmContactor2Fail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almContactor2Fail
+                            }
+        DESCRIPTION         "Send a trap when the Contator 1 Fail Alarm happens."
+        ::= 36
+
+    evalmBatteryFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almBatteryFail
+                            }
+        DESCRIPTION         "Send a trap when the battery is not OK."
+        ::= 29
+
+    evalmCANFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almCANFail
+                            }
+        DESCRIPTION         "Send a trap when the CAN Bus fails."
+        ::= 31
+
+    evalmUSBFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almUSBFail
+                            }
+        DESCRIPTION         "Send a trap when the USB interface fails."
+        ::= 32
+
+    evalmEthernetFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almEthernetFail
+                            }
+        DESCRIPTION         "Send a trap when the Ethernet interface fails."
+        ::= 33
+
+    evalmRS232Fail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almRS232Fail
+                            }
+        DESCRIPTION         "Send a trap when the RS232 interface fails."
+        ::= 34
+
+    evalmRS485Fail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almRS485Fail
+                            }
+        DESCRIPTION         "Send a trap when the RS485 interface fails."
+        ::= 35
+
+    evalmBatteryTest TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almBatteryTest
+                            }
+        DESCRIPTION         "Send a trap when the battery test was started."
+        ::= 30
+
+    evalmSymLow TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSymLow
+                            }
+        DESCRIPTION         "Send a trap when the Symmetry Low Alarm happens."
+        ::= 37
+
+    evalmSymHigh TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almSymHigh
+                            }
+        DESCRIPTION         "Send a trap when the Symmetry High Alarm happens."
+        ::= 38
+
+    evalmFloatHigh TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almFloatHigh
+                            }
+        DESCRIPTION         "Send a trap when the Float High Alarm happens."
+        ::= 39
+
+    evalmFloatLow TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almFloatLow
+                            }
+        DESCRIPTION         "Send a trap when the Float Low Alarm happens."
+        ::= 40
+
+    evalmDeltaBatCurrent TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almDeltaBatCurrent
+                            }
+        DESCRIPTION         "Send a trap when the difference (delta) of current
+                             between battery strings is higher than the configured
+                             value."
+        ::= 41
+
+    evalmTempSensFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almTempSensFail
+                            }
+        DESCRIPTION         "Send a trap when one or more temperature sensor(s)
+                             fails."
+        ::= 42
+
+    evalmDCDCcentral TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almDCDCcentral
+                            }
+        DESCRIPTION         "Send a trap when one or more DCDC (step up) central
+                             converter fails."
+        ::= 43
+
+    evalmDCDCremote TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almDCDCremote
+                            }
+        DESCRIPTION         "Send a trap when one or more DCDC (step down) remote
+                             converter fails."
+        ::= 44
+
+    evalmInverterFail TRAP-TYPE
+        ENTERPRISE          phbMIB
+        VARIABLES           {
+                                almInverterFail
+                            }
+        DESCRIPTION         "Send a trap when one or more Inverter fails."
+        ::= 45
+
+
+    --     OBJECT-GROUP
+    --        OBJECTS {
+    --                        identManufacturer,
+    --                        identModel,
+    --                        identControllerFirmwareVersion,
+    --                        identName
+    --                }
+    --        STATUS            current
+    --        DESCRIPTION         "This automatically created object group contains 
+    --                            all those objects that do not belong to any other 
+    --                            OBJECT-GROUP"
+    --        ::= { phbMIBGroups 11 }
+
+END
+

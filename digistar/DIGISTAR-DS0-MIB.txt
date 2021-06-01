@@ -1,0 +1,242 @@
+DIGISTAR-DS0-MIB DEFINITIONS ::= BEGIN                
+   IMPORTS                                            
+	Integer32,
+	MODULE-IDENTITY, NOTIFICATION-TYPE,
+	OBJECT-TYPE				FROM SNMPv2-SMI
+	DisplayString 				FROM SNMPv2-TC
+	NOTIFICATION-GROUP,
+	OBJECT-GROUP, MODULE-COMPLIANCE		FROM SNMPv2-CONF
+	dsx1LineIndex				FROM DS1-MIB
+	digistarExperimental			FROM DIGISTAR-MIB; 
+
+    digistarDS0MIB MODULE-IDENTITY                              
+	LAST-UPDATED "201406130000Z"  -- 13 June  2014
+        ORGANIZATION    "Digistar Telecomunication, Inc."
+        CONTACT-INFO
+                "Digistar 
+
+                Postal: Sao Leopoldo, RS
+                        Brazil
+
+                Tel: +
+
+                E-mail: engenharia@digistar.com.br"
+        DESCRIPTION
+	      "This MIB manages DS0 (E1) 
+                "
+        REVISION "201406130000Z"  -- 13 June  2014
+	DESCRIPTION
+            "Initial revision"
+::= { digistarExperimental 5 }                   
+
+--
+-- OBJECTS
+--
+-- digistarDS0Notifs	OBJECT IDENTIFIER ::= { digistarDS0MIB 0 }  
+digistarDS0MIBObjects	OBJECT IDENTIFIER ::= { digistarDS0MIB 1 }
+digistarDS0Conformance	OBJECT IDENTIFIER ::= { digistarDS0MIB 2 }
+
+
+
+--****************************************************************************
+-- Stats Table
+--****************************************************************************
+
+digistarDS0StatsTable 	OBJECT-TYPE
+    SYNTAX	SEQUENCE OF DigistarDS0StatsEntry
+    MAX-ACCESS	not-accessible
+    STATUS	current
+    DESCRIPTION        "This table contains information on DS0s configured
+        on DS1 interface.
+"
+    ::= { digistarDS0MIBObjects 1 }
+
+digistarDS0StatsEntry OBJECT-TYPE
+    SYNTAX	DigistarDS0StatsEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION        "An entry in the vismDs0LineStatsTable.
+        Each entry contains following information 
+        applicable for each DS1 interface:
+          Total   DS0s
+          Idle    DS0s
+          Busy    DS0s
+          Blocked DS0s.
+"
+    INDEX	{ dsx1LineIndex }
+    ::= { digistarDS0StatsTable 1 }
+
+DigistarDS0StatsEntry ::=
+    SEQUENCE {
+        digistarTotalDs0Count       Integer32,
+        digistarIdleDs0Count	    Integer32,
+        digistarBusyDs0Count	    Integer32,
+        digistarBlockDs0Count       Integer32
+    }
+
+digistarTotalDs0Count OBJECT-TYPE
+    SYNTAX     Integer32(0..31)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION         "This is the total number of ds0s configured on this 
+         DS1 line."
+    DEFVAL { 0 }
+    ::= { digistarDS0StatsEntry 1 }
+
+digistarIdleDs0Count OBJECT-TYPE
+    SYNTAX     Integer32(0..31)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION         "This is the total number of idle ds0s on this 
+         DS1 line."
+    DEFVAL { 0 }
+    ::= { digistarDS0StatsEntry 2 }
+
+digistarBusyDs0Count OBJECT-TYPE
+    SYNTAX     Integer32(0..31)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION         "This is the number of busy ds0s on this line."
+    DEFVAL { 0 }
+    ::= { digistarDS0StatsEntry 3 }
+
+digistarBlockDs0Count OBJECT-TYPE
+    SYNTAX     Integer32(0..31)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION         "This is the number of blocked ds0s on this line."
+    DEFVAL { 0 }
+    ::= { digistarDS0StatsEntry 4 }
+
+
+
+--****************************************************************************
+-- Status Table
+--****************************************************************************
+
+
+digistarDS0StatusTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DigistarDS0StatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "DS0 channel status"
+    ::= { digistarDS0MIBObjects 2 }
+
+digistarDS0StatusEntry OBJECT-TYPE
+    SYNTAX          DigistarDS0StatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "DS0 channel status entry"
+    INDEX { dsx1LineIndex, digistarDS0ChannelNumber }
+    ::= { digistarDS0StatusTable 1 }
+
+DigistarDS0StatusEntry ::= SEQUENCE {
+	digistarDS0ChannelNumber       			Integer32,
+	digistarDS0ChannelLogicalNumber			Integer32,
+	digistarDS0Status				INTEGER	
+        }
+
+digistarDS0ChannelNumber  OBJECT-TYPE
+     	SYNTAX      Integer32 (0..31)
+	MAX-ACCESS  not-accessible
+	STATUS      current
+	DESCRIPTION
+		"This object identifies the ds0 channel number on a
+        DS1 interface."
+	::= { digistarDS0StatusEntry 1 }
+
+
+
+digistarDS0ChannelLogicalNumber  OBJECT-TYPE
+     	SYNTAX      Integer32 (1..150)
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"This object describes how the ds0 channel is identified on the device."
+	::= { digistarDS0StatusEntry 2 }
+
+
+
+digistarDS0Status OBJECT-TYPE
+    	SYNTAX          INTEGER {
+		            idle  (1),
+		            busy  (2),
+		            fault (3),
+			    block (4),
+		            unknown (5)
+		        }
+    	MAX-ACCESS      read-only
+    	STATUS          current
+    	DESCRIPTION
+       		 "This object is the status of the ds0"
+    	DEFVAL          { unknown } 
+    	::= { digistarDS0StatusEntry 3 }
+
+
+--****************************************************************************
+-- Notifications
+--****************************************************************************
+
+
+
+--****************************************************************************
+-- Conformance and compliance statements
+--****************************************************************************
+
+-- conformance information
+
+digistarDS0MIBGroups		OBJECT IDENTIFIER ::= { digistarDS0Conformance 1 }
+digistarDS0MIBCompliances	OBJECT IDENTIFIER ::= { digistarDS0Conformance 2 }
+
+--
+--  MODULE GROUPS
+--
+
+digistarDS0StatsGroup OBJECT-GROUP
+        OBJECTS {
+		digistarTotalDs0Count,
+	        digistarIdleDs0Count,
+        	digistarBusyDs0Count,
+	        digistarBlockDs0Count
+        }
+        STATUS  current
+        DESCRIPTION
+                "The collection of objects providing management information of the DS0 stats."
+        ::= { digistarDS0MIBGroups 1 }
+
+
+
+digistarDS0StatusGroup OBJECT-GROUP
+        OBJECTS {		
+		digistarDS0Status
+        }
+        STATUS  current
+        DESCRIPTION
+                "The collection of objects providing management information of the DS0 status."
+        ::= { digistarDS0MIBGroups 2 }
+
+
+--
+--  Compliance
+--
+
+
+digistarDS0MIBCompliance MODULE-COMPLIANCE                         
+    STATUS          current
+
+    DESCRIPTION
+            "Defines with DS0 implementations MUST comply."  
+    MODULE           DIGISTAR-DS0-MIB
+    MANDATORY-GROUPS {                                                       
+                	digistarDS0StatsGroup
+                     }
+    GROUP            digistarDS0StatusGroup
+    DESCRIPTION
+        "... systems my optionally support..."
+
+
+    ::= { digistarDS0MIBCompliances 1 }
+
+END

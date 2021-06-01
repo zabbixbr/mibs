@@ -1,0 +1,613 @@
+
+DIGISTAR-FXO-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+	Integer32,
+	MODULE-IDENTITY, NOTIFICATION-TYPE,
+	OBJECT-TYPE				FROM SNMPv2-SMI
+	TimeStamp, TruthValue			FROM SNMPv2-TC
+	NOTIFICATION-GROUP,
+	OBJECT-GROUP, MODULE-COMPLIANCE		FROM SNMPv2-CONF
+	digistarExperimental			FROM DIGISTAR-MIB;
+
+digistarFXOMIB MODULE-IDENTITY
+	LAST-UPDATED "201209040000Z"  -- 4 September 2012
+        ORGANIZATION    "Digistar Telecomunication, Inc."
+        CONTACT-INFO
+                "       Digistar 
+
+                Postal: Sao Leopoldo, RS
+                        Brazil
+
+                Tel: +
+
+                E-mail: engenharia@digistar.com.br"
+        DESCRIPTION
+                "Analog Voice Interface MIB module.
+                 This MIB manages the FXO         
+                 Interfaces in the Digistar PABXs.
+                "
+        REVISION "201209040000Z"  -- 4 September 2012
+	DESCRIPTION
+	    "Added board types: 
+		fxoCel1		  (21),
+		fxoCel2		  (22),
+		fxoCel4		  (23),
+		fxoDaa2		  (24),
+		fxoDaa4		  (25),
+		fxoDaa8		  (26),
+		fxs2fxoDaa2	  (27),
+		digital1E1fxoDaa4 (28),
+		digital2E1fxoDaa4 (29),
+		faulty		  (30),
+		unknown		  (31) "
+        REVISION  "200809030000Z"  -- 3 September 2008
+	DESCRIPTION
+            "Initial revision"
+::= { digistarExperimental 1 }
+
+--
+-- This MIB provides the standard configurations, status monitoring and availability tests to analog voice interfaces on Digistar's PABX.
+-- The Foreign Exchange Office (FXO) is a communication interface that behaves like a phone, or in other words, receives ring signal, DTMF
+-- signal, or FSK. In a PABX it is equivalent to a trunk.
+
+--
+--
+-- OBJECTS
+--
+digistarFXOMIBObjects	OBJECT IDENTIFIER ::= { digistarFXOMIB 1 }
+digistarFXOTraps	OBJECT IDENTIFIER ::= { digistarFXOMIB 2 }
+digistarFXOConformance	OBJECT IDENTIFIER ::= { digistarFXOMIB 3 }
+
+--****************************************************************************
+-- The FXO Board Configuration Table
+--****************************************************************************
+
+-- This table is used to access and change the configuration of the FXO boards
+
+digistarFXOBoardCfgTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DigistarFXOBoardCfgEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "The FXO Board Configuration Table. It contains the
+      FXO interface configuration parameters."
+    ::= { digistarFXOMIBObjects 1 }
+
+digistarFXOBoardCfgEntry OBJECT-TYPE
+    SYNTAX          DigistarFXOBoardCfgEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "Each entry corresponds to a FXO board attached at the PABX."
+    INDEX { digistarFXOBoardCfgNumber }
+    ::= { digistarFXOBoardCfgTable 1 }
+
+DigistarFXOBoardCfgEntry ::= SEQUENCE {
+        digistarFXOBoardCfgNumber		Integer32,
+	digistarFXOBoardCfgType			INTEGER,
+
+	digistarFXOBoardStatusChangeTrapEnable	INTEGER
+        }
+
+digistarFXOBoardCfgNumber OBJECT-TYPE
+    SYNTAX          Integer32 (0..100)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "The number which the FXO board is identified by the PABX."
+    ::= { digistarFXOBoardCfgEntry 1 }
+
+digistarFXOBoardCfgType OBJECT-TYPE
+	SYNTAX      INTEGER {
+		empty		(1),
+
+		fxo2		(2),
+		fxo4		(3),
+		fxo6		(4),
+		fxo8		(5),
+		fxs2fxo2	(6),
+		digital1E1fxo4	(7),
+		digital2E1fxo4	(8),
+		fxs2		(9),
+		fxs4		(10),
+		fxs6		(11),
+		fxs8		(12),
+		fxs12		(13), 
+		fxs10		(14),
+		fxs16		(15),
+		digitalExt	(16),
+		digital1E1	(17),
+		digital2E1	(18),
+		digital1E12	(19),
+		voip		(20),
+		fxoCel1		(21),
+		fxoCel2		(22),
+		fxoCel4		(23),
+		fxoDaa2		(24),
+		fxoDaa4		(25),
+		fxoDaa8		(26),
+		fxs2fxoDaa2	(27),
+		digital1E1fxoDaa4 (28),
+		digital2E1fxoDaa4 (29),
+		faulty		(30),
+		unknown		(31)
+        }
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"Specifies the board interface type. 
+		This object can be defined as only a FXO interface or combined with a FXS or E1 interface. 
+		Furthermore, the interface can be defined as no FXO interface (FXS, E1 or VoIP). In this case the object is used only for informative 			purposes, thus any other information SHOULD NOT be set on another Tables.
+		The board types can be: 
+		  empty:		   No board has been configured in the slot. Thus, anothers tables informations SHOULD NOT return values.
+		  fxo[Daa][2,4,6,8]:	   Defines a FXO interface with two, four, six or eight lines;
+		  fxs2fxo[Daa]2:	   Defines a board with two FXS lines and two FXO lines;
+		  fxs[2,4,6,8,12,10,16]:   Defines a FXS board;
+	  	  digital[1,2]E1:  	   Defines a board with one or two digital link(s);
+     		  digital[1,2]E1fxo[Daa]4: Defines a board with four analog lines and one or two digital link(s);
+		  fxoCel[1,2,4]:  	   Defines a Celular FXO interface with one, two or four line(s); 
+  		  voip:			   Defines a VoIP board;
+		  faulty:  		   Defines a fulty board;
+		  Unknown:	  	   Defines an unknown board;
+		"
+
+	::= { digistarFXOBoardCfgEntry 2 }
+
+
+digistarFXOBoardStatusChangeTrapEnable  OBJECT-TYPE
+     SYNTAX      INTEGER {
+                    enabled(1),
+                    disabled(2)
+                 }
+	MAX-ACCESS  read-write
+	STATUS      current
+	DESCRIPTION
+		"Indicates whether digistarFXOBoardStatusChange traps
+		should be generated for this interface."
+	DEFVAL { enabled }
+	::= { digistarFXOBoardCfgEntry 3 }
+
+--****************************************************************************
+-- The FXO Board Status Table
+--****************************************************************************
+
+-- This table is used to access the status of the FXO boards
+
+digistarFXOBoardStatusTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DigistarFXOBoardStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "The Foreign Exchange Office (FXO) Board Status Table."
+    ::= { digistarFXOMIBObjects 2 }
+
+digistarFXOBoardStatusEntry OBJECT-TYPE
+    SYNTAX          DigistarFXOBoardStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "Each entry corresponds to a FXO board attached at the Digistar PABX."
+    INDEX { digistarFXOBoardCfgNumber }
+    ::= { digistarFXOBoardStatusTable 1 }
+
+DigistarFXOBoardStatusEntry ::= SEQUENCE {
+	digistarFXOBoardStatus			INTEGER,
+	digistarFXOBoardStatusLastChange	TimeStamp
+        }
+
+digistarFXOBoardStatus OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    none	 (1),
+                    boardNoError (2),
+                    boardError	 (3)
+        }
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"Specifies the board interface status, which can be:
+		none: There is no board in the slot;
+		boardNoError: No error exist;
+		boardError: Board with some error."
+	::= { digistarFXOBoardStatusEntry 1 }
+
+digistarFXOBoardStatusLastChange OBJECT-TYPE
+	SYNTAX  TimeStamp
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"The value of MIB II's sysUpTime object at the
+		time this FXO entered its current board status
+		state."
+	::= { digistarFXOBoardStatusEntry 2 }
+
+-- digistarFXO TRAPS
+
+digistarFXOBoardStatusChange NOTIFICATION-TYPE
+    OBJECTS { digistarFXOBoardStatus,
+	      digistarFXOBoardStatusLastChange }
+    STATUS  current
+    DESCRIPTION
+            "A digistarFXOBoardStatusChange trap is sent when the
+            value of an instance digistarFXOBoardStatus changes"
+     ::= { digistarFXOTraps 1 }
+
+--****************************************************************************
+-- The FXO Line Configuration Table
+--****************************************************************************
+
+-- This table is used to access and change the configurations of the FXO lines
+
+digistarFXOLineCfgTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DigistarFXOLineCfgEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "The FXO Line Configuration Table. It contains the
+      FXO lines configuration parameters"
+    ::= { digistarFXOMIBObjects 3 }
+
+digistarFXOLineCfgEntry OBJECT-TYPE
+    SYNTAX          DigistarFXOLineCfgEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "Each entry corresponds to one analog line of the Digistar PABX."
+    INDEX { digistarFXOLineNumber }
+    ::= { digistarFXOLineCfgTable 1 }
+
+DigistarFXOLineCfgEntry ::= SEQUENCE {
+        digistarFXOLineNumber		Integer32,
+	digistarFXOLineEnable		INTEGER,
+	digistarFXOLineDialType		INTEGER,
+	digistarFXOLineCID		INTEGER,
+	digistarFXOLinePolInv		INTEGER,
+
+	digistarFXOLineBlockStatusChangeTrapEnable	INTEGER
+        }
+
+digistarFXOLineNumber OBJECT-TYPE
+    SYNTAX          Integer32 (0..500)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "The number where an analog line is identified by the Digistar PABX."
+    ::= { digistarFXOLineCfgEntry 1 }
+
+digistarFXOLineEnable OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    enabled	(1),
+                    disabled	(2)
+        }
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Specifies the line state."
+    ::= { digistarFXOLineCfgEntry 2 }
+
+digistarFXOLineDialType OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    tone	(1),
+                    pulse	(2)
+        }
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Specifies the line dial type."
+    ::= { digistarFXOLineCfgEntry 3 }
+
+digistarFXOLineCID OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    enabled	(1),
+                    disabled	(2)
+        }
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Specifies the Call Identifier (CID) feature."
+    ::= { digistarFXOLineCfgEntry 4 }
+
+digistarFXOLinePolInv OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    enabled	(1),
+                    disabled	(2)
+        }
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Specifies the Polarity Inversion."
+    ::= { digistarFXOLineCfgEntry 5 }
+
+digistarFXOLineBlockStatusChangeTrapEnable  OBJECT-TYPE
+     SYNTAX      INTEGER {
+                    enabled(1),
+                    disabled(2)
+                 }
+	MAX-ACCESS  read-write
+	STATUS      current
+	DESCRIPTION
+		"Indicates whether digistarFXOLineBlockStatusChange traps
+		should be generated for this interface."
+	DEFVAL { enabled }
+	::= { digistarFXOLineCfgEntry 6 }
+
+--****************************************************************************
+-- The FXO Line Status Table
+--****************************************************************************
+
+-- This table is used to access the status of the FXO lines
+
+digistarFXOLineStatusTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DigistarFXOLineStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "The Foreign Exchange Office (FXO) Line Status Table.
+       It contains hook status, ring detection and other states of
+       the interface"
+
+    ::= { digistarFXOMIBObjects 4 }
+
+digistarFXOLineStatusEntry OBJECT-TYPE
+    SYNTAX          DigistarFXOLineStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "Each entry corresponds to the status fo one analog line of the Digistar PABX."
+    INDEX { digistarFXOLineNumber }
+    ::= { digistarFXOLineStatusTable 1 }
+
+DigistarFXOLineStatusEntry ::= SEQUENCE {
+	digistarFXOLineHookStatus			INTEGER,
+	digistarFXOLineRingDetect			TruthValue,
+
+        digistarFXOLineBlockStatus			INTEGER,
+	digistarFXOLineBlockStatusLastChange		TimeStamp
+        }
+
+
+digistarFXOLineHookStatus OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    onHook	(1),
+                    offHook	(2)
+        }
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"This object contains the hook status of FXO interface.
+                 onHook  - Present the onHook to the connected equipment.
+                 offHook - Present the offHook to the connected equipment."
+    ::= { digistarFXOLineStatusEntry 1 }
+
+digistarFXOLineRingDetect OBJECT-TYPE
+	SYNTAX          TruthValue
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"This object contains the ring detect indication."
+    ::= { digistarFXOLineStatusEntry 2 }
+
+
+digistarFXOLineBlockStatus OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    unblocked	(1),
+                    blocked	(2)
+        }
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"Specifies the line block status"
+    ::= { digistarFXOLineStatusEntry 3 }
+
+digistarFXOLineBlockStatusLastChange OBJECT-TYPE
+	SYNTAX  TimeStamp
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"The value of MIB II's sysUpTime object at the
+		time this FXO entered its current line bock status
+		state..."
+	::= { digistarFXOLineStatusEntry 4 }
+
+--- Line Traps
+
+digistarFXOLineBlockStatusChange NOTIFICATION-TYPE
+    OBJECTS { digistarFXOLineBlockStatus ,
+             digistarFXOLineBlockStatusLastChange }
+    STATUS  current
+    DESCRIPTION
+            "A digistarFXOBoardStatusChange trap is sent when the
+            value of an instance digistarFXOLineBlockStatus changes"
+     ::= { digistarFXOTraps 2 }
+
+
+--****************************************************************************
+-- The FXO Line Test Table
+--****************************************************************************
+
+-- digistarFXOLineTestTable OBJECT-TYPE
+--     SYNTAX          SEQUENCE OF DigistarFXOLineTestEntry
+--     MAX-ACCESS      not-accessible
+--     STATUS          current
+--     DESCRIPTION
+--       "Description ..."
+--     ::= { digistarFXOMIBObjects 5 }
+-- 
+-- digistarFXOLineTestEntry OBJECT-TYPE
+--     SYNTAX          DigistarFXOLineTestEntry
+--     MAX-ACCESS      not-accessible
+--     STATUS          current
+--     DESCRIPTION
+--       "Each entry corresponds to ..."
+--     INDEX { digistarFXOLineNumber }
+--     ::= { digistarFXOLineTestTable 1 }
+-- 
+-- DigistarFXOLineTestEntry ::= SEQUENCE {
+--         digistarFXOLineTestActive		TruthValue,
+-- 	digistarFXOLineTestInit			TimeStamp,
+-- 	digistarFXOLineTestInterval		TimeStamp
+--      }
+
+digistarFXOLinesTest OBJECT IDENTIFIER ::= { digistarFXOMIBObjects 5 }
+
+digistarFXOLinesTestEnable OBJECT-TYPE
+     SYNTAX      INTEGER {
+                    enabled(1),
+                    disabled(2)
+                 }
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Enable the lines test."
+--    ::= { digistarFXOLineTestEntry 1 }
+    ::= { digistarFXOLinesTest 1 }
+
+digistarFXOLinesTestInitTime OBJECT-TYPE
+	SYNTAX          TimeStamp
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Define the timestamp to init the lines test."
+--    ::= { digistarFXOLineTestEntry 2 }
+    ::= { digistarFXOLinesTest 2 }
+
+digistarFXOLinesTestRepeatInterval OBJECT-TYPE
+	SYNTAX       Integer32
+	UNITS      "hours"
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Define the time interval between the lines test (units hours).
+		If digistarFXOLineTestInterval is defined in 0 the test
+		will run only once."
+	DEFVAL { 24 }
+--    ::= { digistarFXOLineTestEntry 3 }
+    ::= { digistarFXOLinesTest 3 }
+
+
+digistarFXOLinesTestActiveAll OBJECT-TYPE
+	SYNTAX          TruthValue
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Active test for all lines. 
+		If this object is set to TRUE, the values of digistarFXOLineTestTable Table will not be considered."
+--    ::= { digistarFXOLineTestEntry 1 }
+    ::= { digistarFXOLinesTest 4 }
+
+--- TABLE
+
+digistarFXOLineTestTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DigistarFXOLineTestEntry
+     MAX-ACCESS      not-accessible
+     STATUS          current
+     DESCRIPTION
+       "Description ..."
+     ::= { digistarFXOLinesTest 5 }
+ 
+digistarFXOLineTestEntry OBJECT-TYPE
+     SYNTAX          DigistarFXOLineTestEntry
+     MAX-ACCESS      not-accessible
+     STATUS          current
+     DESCRIPTION
+       "Each entry corresponds to ..."
+     INDEX { digistarFXOLineNumber }
+     ::= { digistarFXOLineTestTable 1 }
+ 
+DigistarFXOLineTestEntry ::= SEQUENCE {
+       digistarFXOLineTestActive		TruthValue
+      }
+
+digistarFXOLineTestActive OBJECT-TYPE
+	SYNTAX          TruthValue
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+		"Active test for this line."
+   ::= { digistarFXOLineTestEntry 1 }
+
+--****************************************************************************
+-- Conformance and compliance statements
+--****************************************************************************
+
+-- conformance information
+
+digistarFXOMIBGroups		OBJECT IDENTIFIER ::= { digistarFXOConformance 1 }
+digistarFXOMIBCompliances	OBJECT IDENTIFIER ::= { digistarFXOConformance 2 }
+
+
+--
+--  MODULE GROUPS
+--
+
+digistarFXOBoardGroup OBJECT-GROUP
+        OBJECTS {
+		digistarFXOBoardCfgType,
+		digistarFXOBoardStatusChangeTrapEnable,
+		digistarFXOBoardStatus,
+		digistarFXOBoardStatusLastChange
+        }
+        STATUS  current
+        DESCRIPTION
+                "The collection of objects providing information of the PABXs FXO boards."
+        ::= { digistarFXOMIBGroups 1 }
+
+digistarFXOLineGroup OBJECT-GROUP
+        OBJECTS {
+		digistarFXOLineEnable,
+		digistarFXOLineDialType,
+		digistarFXOLineCID,
+		digistarFXOLinePolInv,
+		digistarFXOLineBlockStatusChangeTrapEnable,
+
+		digistarFXOLineHookStatus,
+		digistarFXOLineRingDetect,
+		digistarFXOLineBlockStatus,
+		digistarFXOLineBlockStatusLastChange,
+
+		digistarFXOLinesTestEnable,
+		digistarFXOLinesTestInitTime,
+		digistarFXOLinesTestRepeatInterval,
+		digistarFXOLinesTestActiveAll,
+
+		digistarFXOLineTestActive
+        }
+        STATUS  current
+        DESCRIPTION
+                "The collection of objects providing information of the PABXs FXO lines."
+        ::= { digistarFXOMIBGroups 2 }
+
+digistarFXOTrapGroup NOTIFICATION-GROUP
+    NOTIFICATIONS { 
+		digistarFXOBoardStatusChange,
+		digistarFXOLineBlockStatusChange
+	}
+    STATUS    current
+    DESCRIPTION
+            "A collection of notifications that may be
+            implemented on FXO interfaces."
+	::= { digistarFXOMIBGroups 3 }
+
+--
+--  Compliance
+--
+
+digistarFXOCompliance MODULE-COMPLIANCE
+    STATUS          current
+
+    DESCRIPTION
+            "FXO implementations MUST comply."
+    MODULE           DIGISTAR-FXO-MIB
+    MANDATORY-GROUPS {
+                     digistarFXOBoardGroup
+                     }
+    GROUP            digistarFXOLineGroup
+    DESCRIPTION
+        "... systems my optionally support..."
+    GROUP            digistarFXOTrapGroup
+    DESCRIPTION
+        "... systems my optionally support..."
+
+
+    ::= { digistarFXOMIBCompliances 1 }
+
+END

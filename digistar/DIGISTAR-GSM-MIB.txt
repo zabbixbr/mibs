@@ -1,0 +1,382 @@
+DIGISTAR-GSM-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+	Integer32,
+	MODULE-IDENTITY, NOTIFICATION-TYPE,
+	OBJECT-TYPE				FROM SNMPv2-SMI
+	DisplayString 				FROM SNMPv2-TC
+	NOTIFICATION-GROUP,
+	OBJECT-GROUP, MODULE-COMPLIANCE		FROM SNMPv2-CONF
+	digistarExperimental			FROM DIGISTAR-MIB;
+
+digistarGsmMIB MODULE-IDENTITY
+	LAST-UPDATED "201401290000Z"  -- 29 January 2014
+        ORGANIZATION    "Digistar Telecomunication, Inc."
+        CONTACT-INFO
+                "       Digistar 
+
+                Postal: Sao Leopoldo, RS
+                        Brazil
+
+                Tel: +
+
+                E-mail: engenharia@digistar.com.br"
+        DESCRIPTION
+                "This MIB manages the GSM         
+                 Interfaces in the Digistar Devices.
+
+	        dBm 	- decibels (dB) of the measured power referenced to one milliwatt (mW).
+		GSM 	- Global System for Mobile communications.
+		ICCID 	- Integrated Circuit Card ID.
+		MSISDN	- Mobile Subscriber Integrated Services Digital Network Number. It is the telephone number to the SIM card in a mobile/cellular phone.
+		RSSI	- Received Signal Strength Indication.
+                "
+        REVISION "201401290000Z"  -- 29 January 2014
+	DESCRIPTION
+            "- Added digistarGsmModuleRssiUnknown;
+	     - Changed digistarGsmModuleRssiNotifThreshold default value to -112."
+        REVISION "201304300000Z"  -- 30 April  2013
+	DESCRIPTION
+            "Initial revision"
+::= { digistarExperimental 3 }
+
+
+--
+--
+-- OBJECTS
+--
+digistarGsmNotifs	OBJECT IDENTIFIER ::= { digistarGsmMIB 0 }
+digistarGsmMIBObjects	OBJECT IDENTIFIER ::= { digistarGsmMIB 1 }
+digistarGsmConformance	OBJECT IDENTIFIER ::= { digistarGsmMIB 2 }
+
+--****************************************************************************
+-- GSM Modules Configuration Table
+--****************************************************************************
+
+digistarGsmModuleCfgTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DigistarGsmModuleCfgEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "The GSM Module Configuration Table. It contains the
+      GSM Modules configuration parameters"
+    ::= { digistarGsmMIBObjects 1 }
+
+digistarGsmModuleCfgEntry OBJECT-TYPE
+    SYNTAX          DigistarGsmModuleCfgEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "Each entry corresponds to a GSM module at the boards of the Devices."
+    INDEX { digistarGsmBoardNumber, digistarGsmModuleNumber }
+    ::= { digistarGsmModuleCfgTable 1 }
+
+DigistarGsmModuleCfgEntry ::= SEQUENCE {
+	digistarGsmBoardNumber			Integer32,
+        digistarGsmModuleNumber			Integer32,
+
+--      digistarGsmModuleImsi	                DisplayString,
+--      digistarGsmModuleImei			DisplayString,
+        digistarGsmModuleIccId          	DisplayString,
+        digistarGsmModuleMsisdn               	DisplayString,
+        digistarGsmModuleOperatorName		DisplayString,
+
+	digistarGsmModuleRssiNotifThreshold	Integer32
+
+        }
+
+digistarGsmBoardNumber OBJECT-TYPE
+    SYNTAX          Integer32 (0..100)
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+      "The number which the GSM board is identified by the Device."
+    ::= { digistarGsmModuleCfgEntry 1 }
+
+
+digistarGsmModuleNumber OBJECT-TYPE
+    SYNTAX          Integer32 (0..100)
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+      "The number of the Module GSM at the GSM Board."
+    ::= { digistarGsmModuleCfgEntry 2 }
+
+--digistarGsmModuleImsi OBJECT-TYPE
+--    SYNTAX          DisplayString (SIZE  (0..64))
+--    MAX-ACCESS      read-only
+--    STATUS          current
+--    DESCRIPTION
+--        "International Mobile Subscriber Identifier (IMSI)." 
+--    ::= { digistarGsmModuleCfgEntry 3 }
+
+--digistarGsmModuleImei OBJECT-TYPE
+--    SYNTAX          DisplayString (SIZE  (0..64))
+--    MAX-ACCESS      read-only
+--    STATUS          current
+--    DESCRIPTION
+--        "International Mobile Equipment Identifier (IMEI)." 
+--    ::= { digistarGsmModuleCfgEntry 4 }
+
+digistarGsmModuleIccId OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE  (0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Integrated Circuit Card ID (ICCID) - ITU-T recommendation E.118." 
+    ::= { digistarGsmModuleCfgEntry 5 }
+
+digistarGsmModuleMsisdn OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE  (0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Mobile Subscriber Integrated Services
+        Digital Network Number (MSISDN) or Own Number." 
+    ::= { digistarGsmModuleCfgEntry 6 }
+
+digistarGsmModuleOperatorName OBJECT-TYPE
+    SYNTAX          DisplayString (SIZE  (0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Name of the selected Operator." 
+    ::= { digistarGsmModuleCfgEntry 7 }
+
+digistarGsmModuleRssiNotifThreshold OBJECT-TYPE
+    SYNTAX          Integer32 (-150..0)
+    UNITS           "dBm"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The RSSI notification threshold value.  If RSSI (digistarGsmModuleCurrentRssi)
+	goes below or above the threshold the digistarGsmModuleRssiFallingThreshold 
+	or digistarGsmModuleRssiRisingThreshold notifications will be sent, respectively."
+    DEFVAL          { -112 } 
+    ::= { digistarGsmModuleCfgEntry 8 }
+
+
+--****************************************************************************
+-- GSM Modules Status Table
+--****************************************************************************
+
+digistarGsmModuleStatusTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DigistarGsmModuleStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "The GSM Module Status Table. It contains the
+      status of the GSM Modules, such as Service, RSSI and SIM status"
+    ::= { digistarGsmMIBObjects 2 }
+
+digistarGsmModuleStatusEntry OBJECT-TYPE
+    SYNTAX          DigistarGsmModuleStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+      "Each entry corresponds to a GSM module at the boards of the Devices."
+    INDEX { digistarGsmBoardNumber, digistarGsmModuleNumber }
+    ::= { digistarGsmModuleStatusTable 1 }
+
+DigistarGsmModuleStatusEntry ::= SEQUENCE {
+
+	digistarGsmModuleServiceStatus        		INTEGER,
+	digistarGsmModuleNetRegistrationStatus		INTEGER,
+	digistarGsmModuleCurrentRssi        		Integer32,
+
+        digistarGsmModuleSimHolderStatus         	INTEGER,
+        digistarGsmModuleSimPinAuthStatus        	INTEGER
+--	digistarGsmModuleNumberOfRetriesRemaining  	Unsigned32
+
+        }
+
+
+digistarGsmModuleServiceStatus  OBJECT-TYPE
+     SYNTAX      INTEGER {
+                    notRegistered(0), 
+                    registered(1)
+                 }
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"Specifies the Current Service Status:
+			unregistered(0): Not registered to any network
+			registered(1): Registered to home network or, if digistarGsmModuleNetRegistrationStatus=roaming(5) then registered to another network"
+	::= { digistarGsmModuleStatusEntry 1 }
+
+digistarGsmModuleNetRegistrationStatus OBJECT-TYPE
+    	SYNTAX          INTEGER  {
+			unknown		(0),
+                        notRegistered	(1),
+                        home		(2),
+                        searching	(3),
+			danied		(4),
+			roaming		(5)
+                    }
+    	MAX-ACCESS      read-only
+    	STATUS          current
+    	DESCRIPTION
+       		 "This object indicates network registration status."
+    	DEFVAL          { home } 
+    	::= { digistarGsmModuleStatusEntry 2 }
+
+digistarGsmModuleCurrentRssi OBJECT-TYPE
+	SYNTAX          Integer32 (-150..0)
+	UNITS           "dBm"
+        MAX-ACCESS      read-only
+        STATUS          current
+        DESCRIPTION
+	        "The RSSI (Received signal strength indication) value." 
+        ::= { digistarGsmModuleStatusEntry 3 }
+
+digistarGsmModuleSimHolderStatus OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    simConnError  	(0),
+                    simInserted	  	(1),
+                    simDeactivated	(2)
+        }
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"Indicates the connection status of the SIM and the card holder tray"
+        ::= { digistarGsmModuleStatusEntry 4 }
+
+
+digistarGsmModuleSimPinAuthStatus OBJECT-TYPE
+	SYNTAX      INTEGER {
+                    ready  	(0),
+                    simPIN  	(1),
+                    simPUK	(3),
+                    simPUK2	(4),
+                    other	(5)
+
+        }
+        MAX-ACCESS  read-only
+        STATUS      current
+        DESCRIPTION
+		"Indicates the SIM PIN Authetication:
+                   	ready (0): PIN has already been entered. No further entry needed.
+                   	simPIN (1): Device is waiting for SIM PIN1.
+                    	simPUK (3): Device is waiting for SIM PUK1, if PIN1 was disabled after three failed attempts to enter PIN1.
+                    	simPUK2 (4): Device is waiting for PUK2 to unblock a disabled PIN2.
+                    	other (5)"
+        ::= { digistarGsmModuleStatusEntry 5 }
+
+--****************************************************************************
+-- GSM Notifications
+--****************************************************************************
+
+digistarGsmModuleServiceStatusChange NOTIFICATION-TYPE
+    OBJECTS { digistarGsmBoardNumber,
+	      digistarGsmModuleNumber,
+	      digistarGsmModuleServiceStatus}
+    STATUS  current
+    DESCRIPTION
+            "A digistarGsmModuleServiceStatusChange trap is sent when the
+            value of an instance digistarGsmModuleServiceStatus changes"
+     ::= { digistarGsmNotifs 1 }
+
+
+digistarGsmModuleRssiFallingThreshold NOTIFICATION-TYPE
+    OBJECTS { digistarGsmBoardNumber,
+	      digistarGsmModuleNumber,
+	      digistarGsmModuleCurrentRssi}
+    STATUS          current
+    DESCRIPTION
+        "If RSSI (digistarGsmModuleCurrentRssi) goes bellow digistarGsmModuleRssiNotifThreshold 
+	this notification will be generated."
+   ::= { digistarGsmNotifs 2 }
+
+digistarGsmModuleRssiRisingThreshold NOTIFICATION-TYPE
+    OBJECTS { digistarGsmBoardNumber,
+	      digistarGsmModuleNumber,
+	      digistarGsmModuleCurrentRssi}
+    STATUS          current
+    DESCRIPTION
+        "If RSSI (digistarGsmModuleCurrentRssi) goes above digistarGsmModuleRssiNotifThreshold 
+	this notification will be generated."
+   ::= { digistarGsmNotifs 3 }
+
+digistarGsmModuleRssiUnknown NOTIFICATION-TYPE
+    OBJECTS { digistarGsmBoardNumber,
+	      digistarGsmModuleNumber}
+    STATUS          current
+    DESCRIPTION
+        "If RSSI (digistarGsmModuleCurrentRssi) goes as not known or not detectable 
+	this notification will be generated."
+   ::= { digistarGsmNotifs 4 }
+
+--****************************************************************************
+-- Conformance and compliance statements
+--****************************************************************************
+
+-- conformance information
+
+digistarGsmMIBGroups		OBJECT IDENTIFIER ::= { digistarGsmConformance 1 }
+digistarGsmMIBCompliances	OBJECT IDENTIFIER ::= { digistarGsmConformance 2 }
+
+--
+--  MODULE GROUPS
+--
+
+digistarGsmBoardGroup OBJECT-GROUP
+        OBJECTS {
+		digistarGsmBoardNumber,
+		digistarGsmModuleNumber
+        }
+        STATUS  current
+        DESCRIPTION
+                "The collection of objects providing management information of the Digistar GSM boards."
+        ::= { digistarGsmMIBGroups 1 }
+
+
+digistarGsmModuleGroup OBJECT-GROUP
+        OBJECTS {
+		digistarGsmModuleIccId,
+		digistarGsmModuleMsisdn,
+		digistarGsmModuleOperatorName,
+		digistarGsmModuleRssiNotifThreshold,
+		digistarGsmModuleServiceStatus,
+		digistarGsmModuleNetRegistrationStatus,
+		digistarGsmModuleCurrentRssi,
+		digistarGsmModuleSimHolderStatus,
+		digistarGsmModuleSimPinAuthStatus
+        }
+        STATUS  current
+        DESCRIPTION
+                "The collection of objects providing management information of the Digistar GSM modules."
+        ::= { digistarGsmMIBGroups 2 }
+
+digistarGsmNotificationGroup NOTIFICATION-GROUP
+        NOTIFICATIONS {
+		digistarGsmModuleServiceStatusChange,
+		digistarGsmModuleRssiFallingThreshold,
+		digistarGsmModuleRssiRisingThreshold,
+		digistarGsmModuleRssiUnknown
+        }
+        STATUS  current
+        DESCRIPTION
+                "The collection of objects providing notifications of the Digistar GSM modules."
+        ::= { digistarGsmMIBGroups 3 }
+
+--
+--  Compliance
+--
+
+digistarGsmMIBCompliance MODULE-COMPLIANCE
+    STATUS          current
+
+    DESCRIPTION
+            "GSM implementations MUST comply."
+    MODULE           DIGISTAR-GSM-MIB
+    MANDATORY-GROUPS {
+                	digistarGsmBoardGroup,
+			digistarGsmModuleGroup
+                     }
+    GROUP            digistarGsmNotificationGroup
+    DESCRIPTION
+        "... systems my optionally support..."
+
+
+    ::= { digistarGsmMIBCompliances 1 }
+
+END

@@ -1,0 +1,167 @@
+DIGISTAR-SFP-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+    MODULE-IDENTITY,
+    OBJECT-TYPE,
+    Integer32,
+    Counter32,
+    Gauge32,
+    Unsigned32,
+	NOTIFICATION-TYPE,
+	Counter64
+					        FROM SNMPv2-SMI
+	TimeStamp, TruthValue, DisplayString	FROM SNMPv2-TC
+	NOTIFICATION-GROUP,
+	OBJECT-GROUP, MODULE-COMPLIANCE		FROM SNMPv2-CONF
+	ifIndex					FROM IF-MIB
+	digistarExperimental			FROM DIGISTAR-MIB;
+
+digistarSFPMIB MODULE-IDENTITY
+	LAST-UPDATED "201411300000Z"  -- 30 November 2014
+        ORGANIZATION    "Digistar Telecomunication, Inc."
+        CONTACT-INFO
+                "       Digistar 
+
+                Postal: Sao Leopoldo, RS
+                        Brazil
+
+                Tel: +
+
+                E-mail: engenharia@digistar.com.br"
+        DESCRIPTION
+	        "This MIB manages the Small form-factor pluggable transceiver (SFP)
+                 of Digistar's Devices."
+
+	REVISION "201411300000Z"  -- 30 November 2014
+        DESCRIPTION
+                "Initial revision"
+
+::= { digistarExperimental 7 }
+
+--
+-- This MIB provides the the Small form-factor pluggable transceivers (SFP) of Digistar's Devices.
+--
+--
+
+--
+-- OBJECTS
+--
+digistarSFPTraps	 OBJECT IDENTIFIER ::= { digistarSFPMIB 0 }
+digistarSFPObjects	 OBJECT IDENTIFIER ::= { digistarSFPMIB 1 } 
+digistarSFPConformance  OBJECT IDENTIFIER ::= { digistarSFPMIB 2 }
+
+
+		-- 1.3.6.1.4.1.5504.3.12.1.1
+		digistarSFPTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF DigistarSFPEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Small form pluggable table"
+			::= { digistarSFPObjects 1 }
+
+		
+		-- 1.3.6.1.4.1.5504.3.12.1.1.1
+		digistarSFPEntry OBJECT-TYPE
+			SYNTAX DigistarSFPEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Row in SFP table."
+			INDEX { ifIndex }
+			::= { digistarSFPTable 1 }
+
+		
+		DigistarSFPEntry ::=
+			SEQUENCE { 
+				digistarSFPVendorName
+					DisplayString,
+				digistarSFPVendorPartNumber
+					DisplayString,
+				digistarSFPisPresent
+					TruthValue,
+				digistarSFPTemperature
+					Integer32,
+				digistarSFPVoltage
+					Unsigned32,
+				digistarSFPTxBiasCurrent
+					Unsigned32,
+				digistarSFPTxPower
+					Integer32
+			 }
+
+		-- 1.3.6.1.4.1.5504.3.12.1.1.1.1
+		digistarSFPVendorName OBJECT-TYPE
+			SYNTAX DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"SFP transceiver vendor name (ASCII)"
+			::= { digistarSFPEntry 1 }
+
+		-- 1.3.6.1.4.1.5504.3.12.1.1.1.3
+		digistarSFPVendorPartNumber OBJECT-TYPE
+			SYNTAX DisplayString
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Part number provided by SFP transceiver vendor (ASCII)"
+			::= { digistarSFPEntry 2 }
+
+
+		-- 1.3.6.1.4.1.5504.3.12.1.1.1.3
+		digistarSFPisPresent OBJECT-TYPE
+			SYNTAX TruthValue
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"If SFP transceiver is present"
+			::= { digistarSFPEntry 3 }
+
+
+		-- 1.3.6.1.4.1.5504.5.14.1.20.1.1
+		digistarSFPTemperature OBJECT-TYPE
+			SYNTAX Integer32 (-128..128)
+			UNITS "celcius"
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Internally measured Tranceiver Temperature of the OLT in Celcius."
+			::= { digistarSFPEntry 4 }
+
+		
+		-- 1.3.6.1.4.1.5504.5.14.1.20.1.2
+		digistarSFPVoltage OBJECT-TYPE
+			SYNTAX Unsigned32 (0..655)
+			UNITS "hundredths of volts"
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Internally measured Tranceiver Supply Voltage of the OLT in Volts.
+				The measured value will be in the order of hundredths of Volts."
+			::= { digistarSFPEntry 5 }
+
+		
+		-- 1.3.6.1.4.1.5504.5.14.1.20.1.3
+		digistarSFPTxBiasCurrent OBJECT-TYPE
+			SYNTAX Unsigned32 (0..131)
+			UNITS "milliAmperes"
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Measured Tx Bias current per OLT in milli Amperes."
+			::= { digistarSFPEntry 6 }
+
+		
+		-- 1.3.6.1.4.1.5504.5.14.1.20.1.4
+		digistarSFPTxPower OBJECT-TYPE
+			SYNTAX Integer32 (-600..200)
+			UNITS "tenths of dB"
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Measured Tx Output Power of the OLT in dB.
+				The measured value will be in tenths of dB."
+			::= { digistarSFPEntry 7 }
+
+END
+

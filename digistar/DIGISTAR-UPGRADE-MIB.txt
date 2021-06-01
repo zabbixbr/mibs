@@ -1,0 +1,321 @@
+DIGISTAR-UPGRADE-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+    MODULE-IDENTITY,
+    OBJECT-TYPE,
+    Integer32,
+    Counter32,
+    Gauge32,
+    Unsigned32,
+	NOTIFICATION-TYPE,
+	Counter64
+					        FROM SNMPv2-SMI
+	TimeStamp, TruthValue, DisplayString	FROM SNMPv2-TC
+	NOTIFICATION-GROUP,
+	OBJECT-GROUP, MODULE-COMPLIANCE		FROM SNMPv2-CONF
+	digistarExperimental			FROM DIGISTAR-MIB;
+
+digistarUpgradeMIB MODULE-IDENTITY
+	LAST-UPDATED "201502190000Z"  -- 19 February 2015
+        ORGANIZATION    "Digistar Telecomunication, Inc."
+        CONTACT-INFO
+                "       Digistar 
+
+                Postal: Sao Leopoldo, RS
+                        Brazil
+
+                Tel: +
+
+                E-mail: engenharia@digistar.com.br"
+        DESCRIPTION
+	        "This MIB manages images, versions of Digistar's Devices
+		and allow upgrade those images."
+
+	REVISION "201502190000Z"  -- 19 February 2015
+        DESCRIPTION
+                "Initial revision"
+
+::= { digistarExperimental 8 }
+
+--
+-- ### MIB tree structure ###
+--
+--
+-- +-digistarUpgradeMIB(8)
+--   |
+--   +-digistarUpgradeTraps(0)
+--   | |
+--   | +-digistarUpgradeStatusTrap(1)
+--   |
+--   +-digistarUpgradeObjects(1)
+--     |
+--     + -R- String    digistarCfgBootPartition(1)
+--     |     Textual Convention: DisplayString
+--     |     Size: 1..20
+--     |
+--     +-digistarRunningImage(2)
+--     | |
+--     | + -R- String    digistarRunningImgSource(1)
+--     | |     Textual Convention: DisplayString
+--     | |     Size: 1..20
+--     | + -R- String    digistarRunningImgVersion(2)
+--     | |     Textual Convention: DisplayString
+--     | |     Size: 1..20
+--     | + -R- String    digistarRunningImageDate(3)
+--     |       Textual Convention: DisplayString
+--     |       Size: 1..20
+--     |
+--     +-digistarSystemVersionsTable(3)
+--       |
+--       +-digistarSystemVersionsEntry(1)
+--         |  Index: digistarImageIndex
+--         |
+--         + -R-  Integer32 digistarImageIndex(1)
+--         |      Range: 1..128
+--         + -R-  String    digistarImage(2)
+--         |      Textual Convention: DisplayString
+--         |      Size: 1..20
+--         + -R-  String    digistarVersion(3)
+--         |      Textual Convention: DisplayString
+--         |      Size: 1..20
+--         + -R-  String    digistarDate(4)
+--         |      Textual Convention: DisplayString
+--         |      Size: 1..20
+--         + -R-  EnumVal   digistarUpgradeStatus(5)
+--         |      Values: none(0), queued(1), noUpgrade(2), downloading(3), complete(4), error(5), aborted(6), fileError(7), downloaded(8), fileNotFound(9)
+--         + -RW- EnumVal   digistarUpgradeAction(6)
+--         |      Values: none(0), download(1), activate(2), commit(3), downloadActivate(4), downloadActivateCommit(5), abortDownload(6), activateCommit(7)
+--         + -RW- String    digistarUpgradeProtocol(7)
+--         |      Textual Convention: DisplayString
+--         |      Size: 1..10
+--         + -RW- String    digistarUpgradeVRF(8)
+--         |      Textual Convention: DisplayString
+--         |      Size: 1..30
+--         + -RW- String    digistarUpgradeAccessPath(9)
+--                Textual Convention: DisplayString
+--                Size: 1..255
+
+--
+-- OBJECTS
+--
+
+-- .1.3.6.1.4.1.29450.2.8.0
+digistarUpgradeTraps	 OBJECT IDENTIFIER ::= { digistarUpgradeMIB 0 }
+
+-- .1.3.6.1.4.1.29450.2.8.1
+digistarUpgradeObjects	 OBJECT IDENTIFIER ::= { digistarUpgradeMIB 1 } 
+
+-- .1.3.6.1.4.1.29450.2.8.1.2
+digistarRunningImage   OBJECT IDENTIFIER ::= { digistarUpgradeObjects 2 }
+
+
+-- .1.3.6.1.4.1.29450.2.8.1.1
+digistarCfgBootPartition OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..20))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"Configured boot partition."
+	::= { digistarUpgradeObjects 1 }
+
+
+--****************************************************************************
+-- Running Image
+--****************************************************************************
+
+-- .1.3.6.1.4.1.29450.2.8.1.2.1
+digistarRunningImgSource OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..20))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"The ifIndex of the physical olt interface."
+	::= { digistarRunningImage 1 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.2.2
+digistarRunningImgVersion OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..20))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"The ifIndex of the physical olt interface."
+	::= { digistarRunningImage 2 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.2.3
+digistarRunningImageDate OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..20))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"The ifIndex of the physical olt interface."
+	::= { digistarRunningImage 3 }
+
+
+
+--****************************************************************************
+-- System Versions
+--****************************************************************************
+
+-- .1.3.6.1.4.1.29450.2.8.1.3
+digistarSystemVersionsTable OBJECT-TYPE
+	SYNTAX SEQUENCE OF DigistarSystemVersionsEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+		"Digistar system versions table."
+	::= { digistarUpgradeObjects 3 }
+
+		
+-- .1.3.6.1.4.1.29450.2.8.1.3.1
+digistarSystemVersionsEntry OBJECT-TYPE
+	SYNTAX DigistarSystemVersionsEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+		"One row of the system versions table."
+	INDEX { digistarImageIndex }
+	::= { digistarSystemVersionsTable 1 }
+
+		
+DigistarSystemVersionsEntry ::=
+	SEQUENCE { 
+		digistarImageIndex
+			Integer32,
+		digistarImage
+			DisplayString,
+		digistarVersion
+			DisplayString,
+		digistarDate
+			DisplayString,
+		digistarUpgradeStatus
+			INTEGER,
+		digistarUpgradeAction
+			INTEGER,
+		digistarUpgradeProtocol
+			DisplayString,
+		digistarUpgradeVRF
+			DisplayString,
+		digistarUpgradeAccessPath
+			DisplayString
+		}
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.1
+digistarImageIndex OBJECT-TYPE
+	SYNTAX Integer32(1..128)
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"The index of image in the MIB table."
+	::= { digistarSystemVersionsEntry 1 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.2
+digistarImage OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..20))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"Image name."
+	::= { digistarSystemVersionsEntry 2 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.3
+digistarVersion OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..20))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"Current version of image."
+	::= { digistarSystemVersionsEntry 3 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.4
+digistarDate OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..20))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"Date of last upgrade."
+	::= { digistarSystemVersionsEntry 4 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.5
+digistarUpgradeStatus OBJECT-TYPE
+	SYNTAX INTEGER
+	{
+		none(0),
+		queued(1),
+		noUpgrade(2),
+		downloading(3),
+		complete(4),
+		error(5),
+		aborted(6),
+		fileError(7),
+		downloaded(8),
+		fileNotFound(9)
+	}
+	MAX-ACCESS read-only
+	STATUS      current
+	DESCRIPTION
+		"Status of image upgrade."
+	DEFVAL { none }
+	::= { digistarSystemVersionsEntry 5 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.6
+digistarUpgradeAction OBJECT-TYPE
+	SYNTAX INTEGER
+	{
+		none(0),
+		download(1),
+		activate(2),
+		commit(3),
+		downloadActivate(4),
+		downloadActivateCommit(5),
+		abortDownload(6),
+		activateCommit(7)
+	}
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		"Which upgrade action to perform."
+	DEFVAL { none }
+	::= { digistarSystemVersionsEntry 6 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.7
+digistarUpgradeProtocol OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..10))
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		"Protocol used to download image
+		{ ftp | http | https | tftp }."
+	::= { digistarSystemVersionsEntry 7 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.8
+digistarUpgradeVRF OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..30))
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		"VRF (default: global)."
+	::= { digistarSystemVersionsEntry 8 }
+
+-- .1.3.6.1.4.1.29450.2.8.1.3.1.9
+digistarUpgradeAccessPath OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..255))
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		"[user:pass@]url/path/file"
+	::= { digistarSystemVersionsEntry 9 }
+
+
+
+--****************************************************************************
+-- Notifications
+--****************************************************************************
+
+-- .1.3.6.1.4.1.29450.2.8.0.1
+digistarUpgradeStatusTrap NOTIFICATION-TYPE
+	OBJECTS { digistarImage,digistarUpgradeStatus }
+	STATUS current
+	DESCRIPTION 
+		"Notify upgrade status request."
+	::= { digistarUpgradeTraps 1 }
+
+END

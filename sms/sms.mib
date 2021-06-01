@@ -1,0 +1,2688 @@
+-- SMS UPS control MIB.
+--
+-- Author                   Date        Comment
+-- ==================================================================
+-- R.L.S.B.		    8/07/08     Portado para SMS
+--
+
+Sms DEFINITIONS ::= BEGIN
+
+IMPORTS
+   enterprises, IpAddress                       FROM RFC1155-SMI
+   DisplayString                                FROM RFC1213-MIB
+   OBJECT-TYPE                                  FROM RFC-1212
+   TRAP-TYPE                                    FROM RFC-1215;
+
+sms				OBJECT IDENTIFIER ::=  { enterprises 28802 }
+
+produto				OBJECT IDENTIFIER ::=  { sms 1 }
+leituras			OBJECT IDENTIFIER ::=  { sms 2 }
+info                            OBJECT IDENTIFIER ::=  { leituras 1 }
+mono                            OBJECT IDENTIFIER ::=  { leituras 2 }
+m-flag                          OBJECT IDENTIFIER ::=  { mono 8 }
+mf-sts                          OBJECT IDENTIFIER ::=  { m-flag 1 }
+
+tri                             OBJECT IDENTIFIER ::=  { leituras 3 }
+t-flag                          OBJECT IDENTIFIER ::=  { tri 17 }
+tf-fal                          OBJECT IDENTIFIER ::=  { t-flag 1 }
+tf-sts                          OBJECT IDENTIFIER ::=  { t-flag 2 }
+tf-cfg                          OBJECT IDENTIFIER ::=  { t-flag 3 }
+
+cmd                             OBJECT IDENTIFIER ::=  { sms 3 }
+comunicacao                     OBJECT IDENTIFIER ::=  { sms 4 }
+setup                           OBJECT IDENTIFIER ::=  { sms 5 }
+
+snmp                            OBJECT IDENTIFIER ::=  { setup 1 }
+traps                           OBJECT IDENTIFIER ::=  { snmp 4 }
+tp-mono                         OBJECT IDENTIFIER ::=  { traps 1 }
+tp-tri                          OBJECT IDENTIFIER ::=  { traps 2 }
+tp-comunic                      OBJECT IDENTIFIER ::=  { traps 3 }
+
+email                           OBJECT IDENTIFIER ::=  { setup 2 }
+mensagem                        OBJECT IDENTIFIER ::=  { email 6 }
+msg-mono                        OBJECT IDENTIFIER ::=  { mensagem 1 }
+msg-tri                         OBJECT IDENTIFIER ::=  { mensagem 2 }
+msg-comunic                     OBJECT IDENTIFIER ::=  { mensagem 3 }
+
+rede                            OBJECT IDENTIFIER ::=  { setup 3 }
+periodo							OBJECT IDENTIFIER ::=  { setup 4 }
+http                            OBJECT IDENTIFIER ::=  { setup 5 }
+no-break                        OBJECT IDENTIFIER ::=  { setup 6 }
+alerta24h                       OBJECT IDENTIFIER ::=  { setup 7 }
+
+agenda                          OBJECT IDENTIFIER ::=  { sms 6 }
+log                             OBJECT IDENTIFIER ::=  { sms 7 }
+eventos                         OBJECT IDENTIFIER ::=  { log 1 }
+dados                           OBJECT IDENTIFIER ::=  { log 2 }
+
+
+
+-- ==================================================================
+-- enterprises.sms.produto
+-- ==================================================================
+
+nome  OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "nome do produto"
+   ::= { produto 1 }
+
+versao  OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "versao do produto"
+   ::= { produto 2 }
+
+
+
+-- ==================================================================
+-- enterprises.sms.leituras
+-- ==================================================================
+
+-- ==================================================================
+-- enterprises.sms.leituras.info
+-- ==================================================================
+
+
+ups    OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "tipo de UPS"
+   ::= { info 1 }
+
+
+modeloUps OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "modelo do UPS"
+   ::= { info 2 }
+
+versaoUps OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "versao do UPS"
+   ::= { info 3 }
+
+faixaTensao   OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Faixa de tensao"
+   ::= { info 4 }
+
+faixaCorrente   OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Faixa de corrente"
+   ::= { info 5 }
+
+cargaBateriaUps   OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "carga de bateria"
+   ::= { info 6 }
+
+frequenciaUps   OBJECT-TYPE
+   SYNTAX DisplayString
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Frequencia"
+   ::= { info 7 }
+
+
+-- ==================================================================
+-- enterprises.sms.leituras.mono
+-- ==================================================================
+
+vin    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de entrada"
+   ::= { mono 1 }
+
+vout    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de saida"
+   ::= { mono 2 }
+
+potout    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Potencia de saida"
+   ::= { mono 3 }
+
+fout    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Frequencia de saida"
+   ::= { mono 4 }
+
+perBateria OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Porcentagem da carga de bateria"
+   ::= { mono 5 }
+
+temperatura   OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Temperatura"
+   ::= { mono 6 }
+
+vinBak    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Ultima tensao de entrada registrada antes de entrar em bateria"
+   ::= { mono 7 }
+
+
+-- ==================================================================
+-- enterprises.sms.leituras.mono
+-- ==================================================================
+
+-- ==================================================================
+-- enterprises.sms.leituras.mono.m-flag
+-- ==================================================================
+
+-- ==================================================================
+-- enterprises.sms.leituras.mono.m-flag.mf-sts
+-- ==================================================================
+
+redeOuBateria   OBJECT-TYPE
+    SYNTAX INTEGER { rede(0), bateria(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Se o no-break esta operando em rede ou bateria"
+    ::= { mf-sts 1 }
+
+statusBateria     OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), baixa(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Status da bateria"
+    ::= { mf-sts 2 }
+
+inversorOuBypass OBJECT-TYPE
+    SYNTAX INTEGER { inversor(0), bypass(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Se o UPS esta em inversor ou by-pass"
+    ::= { mf-sts 3 }
+
+buckOuBoost      OBJECT-TYPE
+    SYNTAX INTEGER { buck(0), boost(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Se o UPS esta com buck ou boost"
+    ::= { mf-sts 4 }
+
+statusUps OBJECT-TYPE
+    SYNTAX INTEGER { falha(0), ok(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Indica operacao normal ou falha no sistema"
+    ::= { mf-sts 5 }
+
+autoTeste   OBJECT-TYPE
+    SYNTAX INTEGER { semTeste(0), emAndamento(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Indica a ocorrencia de teste no UPS"
+    ::= { mf-sts 6 }
+
+stsShutdown       OBJECT-TYPE
+    SYNTAX INTEGER { inativo(0), ativo(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Indica se o no-break esta se preparando para se desligar"
+    ::= { mf-sts 7 }
+
+beep    OBJECT-TYPE
+    SYNTAX INTEGER { desligado(0), ligado(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Indica se o beep do no-break esta ligado"
+    ::= { mf-sts 8 }
+
+
+
+
+-- ==================================================================
+-- enterprises.sms.leituras.tri
+-- ==================================================================
+    
+vinR    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de entrada R"
+   ::= { tri 1 }
+
+vinS     OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de entrada S"
+   ::= { tri 2 }
+
+vinT    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de entrada T"
+   ::= { tri 3 }
+
+voutR      OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de saida R"
+   ::= { tri 4 }
+
+voutS      OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de saida S"
+   ::= { tri 5 }
+
+voutT      OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de saida T"
+   ::= { tri 6 }
+
+vbpR       OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de by-pass R"
+   ::= { tri 7 }
+
+vbpS       OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de by-pass S"
+   ::= { tri 8 }
+
+vbpT       OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Tensao de by-pass T"
+   ::= { tri 9 }
+
+freqIn     OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Frequencia de Entrada"
+   ::= { tri 10 }
+
+freqBp     OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Frequencia de By-pass"
+   ::= { tri 11 }
+
+freqOut    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Frequencia de Saida"
+   ::= { tri 12 }
+
+ioutR     OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Corrente de entrada R"
+   ::= { tri 13 }
+
+ioutS     OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Corrente de entrada S"
+   ::= { tri 14 }
+                
+ioutT     OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Corrente de entrada T"
+   ::= { tri 15 }
+
+potBat    OBJECT-TYPE
+   SYNTAX INTEGER
+   ACCESS read-only
+   STATUS mandatory
+   DESCRIPTION
+      "Potencia de bateria"
+   ::= { tri 16 }
+
+
+-- ==================================================================
+-- enterprises.sms.leituras.tri
+-- ==================================================================
+
+-- ==================================================================
+-- enterprises.sms.leituras.tri.t-flag
+-- ==================================================================
+
+-- ==================================================================
+-- enterprises.sms.leituras.tri.t-flag.tf-fal
+-- ==================================================================
+
+recarregador        OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), falha(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Indica se tem falha de recarregador no no-break"
+    ::= { tf-fal 1 }
+
+faseInvertida       OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), falha(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "indica se as fases estao invertidas no no-break"
+    ::= { tf-fal 2 }
+
+bateriaBaixaCritica        OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), falha(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Indica se a bateria atingiu nivel de tensao baixo critico"
+    ::= { tf-fal 3 }
+
+sobrecarga      OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), falha(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "se o no-break estiver em sobrecarga"
+    ::= { tf-fal 4 }
+
+sobretemperatura        OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), falha(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "se ocorre sobre temperatura no no-break"
+    ::= { tf-fal 5 }
+
+inversor        OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), falha(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "Se tem falha no inversor"
+    ::= { tf-fal 6 }
+
+faltaDeRede     OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), falha(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "se ocorre queda de rede"
+    ::= { tf-fal 7 }
+
+defeitoNaFonte  OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), falha(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "indica defeito na fonte principal"
+    ::= { tf-fal 8 }
+
+-- ==================================================================
+-- enterprises.sms.leituras.tri.t-flag.tf-sts
+-- ==================================================================
+
+statusVin  OBJECT-TYPE
+    SYNTAX INTEGER { normal(0), anormal(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "status da tensao de entrada"
+    ::= { tf-sts 1 }
+
+statusVbp    OBJECT-TYPE
+    SYNTAX INTEGER { normal(0), anormal(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "status da tensao de by-pass"
+    ::= { tf-sts 2 }
+
+statusVout   OBJECT-TYPE
+    SYNTAX INTEGER { normal(0), anormal(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "status da tensao de saida"
+    ::= { tf-sts 3 }
+
+statusFreqVbp        OBJECT-TYPE
+    SYNTAX INTEGER { normal(0), anormal(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "status da frequencia de by-pass"
+    ::= { tf-sts 4 }
+
+saidaEmInversorOuBypass  OBJECT-TYPE
+    SYNTAX INTEGER { inversor(0), bypass(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "indica se o nobreak esta em inversor ou bypass"
+    ::= { tf-sts 5 }
+
+chaveEmergencia     OBJECT-TYPE
+    SYNTAX INTEGER { desacionada(0), acionada(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "indica o estado da chave de emergencia"
+    ::= { tf-sts 6 }
+
+statusBateriaTri        OBJECT-TYPE
+    SYNTAX INTEGER { ok(0), baixa(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "indica se o nivel de tensao de bateria do no-break esta baixo"
+    ::= { tf-sts 7 }
+
+chaveDeBypass   OBJECT-TYPE
+    SYNTAX INTEGER { desacionada(0), acionada(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "indica estado da CHEST"
+    ::= { tf-sts 8 }
+
+
+-- ==================================================================
+-- enterprises.sms.leituras.tri.t-flag.tf-cfg
+-- ==================================================================
+
+trifasicoOuMono        OBJECT-TYPE
+    SYNTAX INTEGER { trifasica(0), monofasica(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "se o modelo de no-break e trifasico ou monofasico"
+    ::= { tf-cfg 1 }
+
+chestEmInversorOuBypass  OBJECT-TYPE
+    SYNTAX INTEGER { bypass(0), inversor(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "indica a posicao da CHEST em by-pass ou inversor"
+    ::= { tf-cfg 2 }
+
+entradaEstrelaOuTriangulo   OBJECT-TYPE
+    SYNTAX INTEGER { estrela(0), triangulo(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "o tipo de entrada, estrela ou triangulo"
+    ::= { tf-cfg 3 }
+
+saidaEstrelaOuTriangulo OBJECT-TYPE
+    SYNTAX INTEGER { estrela(0), triangulo(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "o tipo de saida, estrela ou triangulo"
+    ::= { tf-cfg 4 }
+
+logDeEventos    OBJECT-TYPE
+    SYNTAX INTEGER { sem(0), com(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION 
+        "se o no-break possui log de eventos"
+    ::= { tf-cfg 5 }
+
+
+-- ==================================================================
+-- enterprises.sms.cmd
+-- ==================================================================
+
+
+testes   OBJECT-TYPE
+    SYNTAX INTEGER { semTeste(0), emAndamento(1)  }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+	"GET retorna:	
+			0 - Sem teste ou
+			1 - Teste em andamento
+	SET usa:	
+			0 - Cancela teste
+		    	1 - Para fazer um teste de bateria baixa
+                        2 - Testa o UPS durante um periodo de N segundo"
+    ::= { cmd 1 }
+
+tempoTeste       OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Tempo em segundos da duracao do teste,
+	ate o maximo de 6.000"
+    ::= { cmd 2 }
+
+mudaBeep         OBJECT-TYPE
+    SYNTAX INTEGER { desligado(0), ligado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+	"GET retorna:	
+			0 - beep desligado
+			1 - beep ligado
+	SET usa:	
+			0 - Desliga beep
+		    	1 - liga beep"
+    ::= { cmd 3 }
+
+shutdown OBJECT-TYPE
+    SYNTAX INTEGER { inativo(0), ativo(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+	"GET retorna:	
+			0 - shutdown inativo
+			1 - shutdown ativado
+	SET usa:	
+			0 - Cancela shutdown
+		    	1 - solicita shutdown no UPS
+		    	2 - solicita shutdown e restore no UPS" 
+    ::= { cmd 4 }
+
+tempoShutdown    OBJECT-TYPE
+    SYNTAX INTEGER 
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+	"tempo em segundos para o no-break iniciar o shutdown apos o comando ser solicitado,
+	ate o maximo de 600"
+    ::= { cmd 5 }
+
+tempoRestore     OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+	"Imediatamente apos o shutdown, tempo em minutos para o no-break entrar em modo restore,
+	ate o maximo de 9999"
+    ::= { cmd 6 }
+
+ligaDeslRele     OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+	"Liga ou desliga um rele inteligente do no-break
+        GET nao retorna nenhuma informacao valida
+	SET solicita um numero de 0 a 9 para identificar o rele"
+    ::= { cmd 7 }
+
+selecionaRele    OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+	"Seleciona o rele que recebera o comando de liga/desliga
+        GET nao retorna nenhuma informacao valida
+	SET solicita um numero de 0 a 9 para identificar o rele"
+    ::= { cmd 8 }
+
+
+-- ==================================================================
+-- enterprises.sms.comunicacao
+-- ==================================================================
+
+tipoComunicacao  OBJECT-TYPE
+    SYNTAX INTEGER { powerViewTri(0), powerView(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Indica o protocolo de comunicacao usado pelo no-break"
+    ::= { comunicacao 1 }
+
+
+stsComunicacao   OBJECT-TYPE
+    SYNTAX INTEGER { offLine(0), onLine(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "Status da comunicacao entre o Agente SNMP e o no-break"
+    ::= { comunicacao 2 }
+
+
+
+-- ==================================================================
+-- enterprises.sms.setup
+-- ==================================================================
+
+
+-- ==================================================================
+-- enterprises.sms.setup.snmp
+-- ==================================================================
+
+
+comunidadeLeitura    OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..8))
+        ACCESS read-write
+        STATUS mandatory
+        DESCRIPTION
+                "comunidade usada para validar a leitura
+                 de informacoes da placa agente"
+        ::= { snmp 1 }
+
+comunidadeEscrita       OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..8))
+        ACCESS read-write
+        STATUS mandatory
+        DESCRIPTION
+                "comunidade usada para validar a escrita
+                 de informacoes da placa agente"
+        ::= { snmp 2 }
+
+receptorTable        OBJECT-TYPE
+        SYNTAX  SEQUENCE OF ReceptorEntry
+	ACCESS	not-accessible
+	STATUS	mandatory
+	DESCRIPTION
+                "Uma tabela de enderecos IP, que deverao ser usados
+		como destino de mensagens de eventos no no-break"
+        ::= { snmp 3 }
+
+
+receptorEntry       OBJECT-TYPE
+        SYNTAX  ReceptorEntry
+	ACCESS	not-accessible
+	STATUS	mandatory
+	DESCRIPTION
+                "define a sequencia da linha,
+		ou seja, 
+		as colunas que fazem parte da linha,
+                nenhuma operacao SNMP pode criar ou apagar colunas desta tabela"
+	INDEX	{ receptorIndice }
+        ::= { receptorTable 1 }
+
+
+ReceptorEntry ::= SEQUENCE {
+	receptorIndice	INTEGER,
+	habReceptor	INTEGER,
+	endIP		IpAddress,
+	comunidade	DisplayString
+	}
+
+receptorIndice  OBJECT-TYPE
+    SYNTAX INTEGER (0.. 4)
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Indice da tabela de Enderecos IP para transmissao de eventos,
+        usado como identificacao unica da linha da tabela"
+    ::= { receptorEntry 1 }
+    
+habReceptor OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Indica se o receptor esta habilitado para este endereco"
+    ::= { receptorEntry 2 }
+
+
+endIP OBJECT-TYPE
+    SYNTAX  IpAddress
+    ACCESS  read-write
+    STATUS mandatory
+    DESCRIPTION
+        "endereco IP para qual sera enviado a sinalizacao de evento"
+    ::= { receptorEntry 3 }
+
+comunidade OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..7))
+    ACCESS  read-write
+    STATUS mandatory
+    DESCRIPTION
+        "comunidade usada pelo agente para enviar o evento"
+    ::= { receptorEntry 4 }
+
+-- ==================================================================
+-- enterprises.sms.setup.snmp.traps
+-- ==================================================================
+
+-- ==================================================================
+-- enterprises.sms.setup.snmp.traps.tp-mono
+-- ==================================================================
+
+
+habTrapEmRede        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        de retorno de rede eletrica"
+    ::= { tp-mono 1 }
+
+habTrapEmBateria        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        de queda de rede eletrica, o no-break passa a operar em bateria"
+    ::= { tp-mono 2 }
+
+habTrapBateriaOk        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que o nivel de carga do no-break esta OK"
+    ::= { tp-mono 3 }
+
+habTrapBateriaBaixa        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que o nivel de carga do no-break esta baixo"
+    ::= { tp-mono 4 }
+
+habTrapEmInversor        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break passa a operar com inversor ligado"
+    ::= { tp-mono 5 }
+
+habTrapEmBypass        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break passa a operar em by-pass"
+    ::= { tp-mono 6 }
+
+habTrapBuck        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break acionou o Buck"
+    ::= { tp-mono 7 }
+
+habTrapBoost        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break acionou o boost"
+    ::= { tp-mono 8 }
+
+habTrapUpsFalha        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        que indica se o UPS esta em falha"
+    ::= { tp-mono 9 }
+
+habTrapUpsOk        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        que indica se o UPS esta operando normalmente"
+    ::= { tp-mono 10 }
+
+habTrapSemTeste        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break terminou o auto-teste"
+    ::= { tp-mono 11 }
+
+habTrapEmTeste        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do momento em que o no-break iniciou o auto-teste"
+    ::= { tp-mono 12 }
+
+habTrapSemShutdown        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando o no-break terminou de executar um shutdown"
+    ::= { tp-mono 13 }
+
+habTrapEmShutdown        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do momento em que o no-break iniciou o shutdown"
+    ::= { tp-mono 14 }
+
+habTrapSemBeep        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        no instante em que o beep do no-break foi configurado para ficar mudo"
+    ::= { tp-mono 15 }
+
+habTrapComBeep        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        no instante em que o beep do no-break foi habilitado pela configuracao"
+    ::= { tp-mono 16 }
+
+
+
+
+-- ==================================================================
+-- enterprises.sms.setup.snmp.traps.tp-tri
+-- ==================================================================
+
+
+habTrapFalhaRecarregador         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que ocorreu falha no recarregador"
+    ::= { tp-tri 1 }
+
+habTrapRecarregadorOk         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando o recarregador saiu da falha e passou a operar em regime normal"
+    ::= { tp-tri 2 }
+
+habTrapFaseInvertida         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que as fases do no-break estao invertidas"
+    ::= { tp-tri 3 }
+
+habTrapSemFaseInvertida          OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que as fases do no-break estao operando normalmente"
+    ::= { tp-tri 4 }
+
+habTrapBateriaBaixaCritica        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break que esta funcionando em bateria,
+        passa a ter o nivel de carga critico"
+    ::= { tp-tri 5 }
+
+habTrapBateriaNivelOk        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break que esta funcionando em rede,
+        deixa de ter o nivel de carga critico"
+    ::= { tp-tri 6 }
+
+habTrapSobrecarga        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que ocorreu sobrecarga no no-break"
+    ::= { tp-tri 7 }
+
+habTrapSemSobrecarga         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que deixou de acontecer sobrecarga no no-break"
+    ::= { tp-tri 8 }
+
+habTrapSobretemperatura        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que ocorreu sobre temperatura no no-break"
+    ::= { tp-tri 9 }
+
+habTrapSemSobretemperatura         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que deixou de acontecer sobre temperatura no no-break"
+    ::= { tp-tri 10 }
+
+habTrapInversorFalha         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando falha no inversor"
+    ::= { tp-tri 11 }
+
+habTrapInversorOk         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o inversor volta a operar normalmente"
+    ::= { tp-tri 12 }
+
+habTrapFaltaDeRede          OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que aconteceu queda de rede"
+    ::= { tp-tri 13 }
+
+habTrapRedeOk         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        de retorno da rede eletrica"
+    ::= { tp-tri 14 }
+
+habTrapDefeitoFonte         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que ocorreu defeito na fonte"
+    ::= { tp-tri 15 }
+
+habTrapFonteOk        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que a fonte volta a operar normalmente"
+    ::= { tp-tri 16 }
+
+
+habTrapVinAnormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de entrada estiver anormal"
+    ::= { tp-tri 17 }
+
+habTrapVinNormal        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de entrada retornar na faixa normal de operacao"
+    ::= { tp-tri 18 }
+
+habTrapVbpAnormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de by-pass estiver anormal"
+    ::= { tp-tri 19 }
+
+habTrapVbpNormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de by-pass retornar na faixa normal de operacao"
+    ::= { tp-tri 20 }
+
+habTrapVoutAnormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de saida estiver anormal"
+    ::= { tp-tri 21 }
+
+habTrapVoutNormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de saida retornar na faixa normal de operacao"
+    ::= { tp-tri 22 }
+
+habTrapFreqVbpAnormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a frequencia de by-pass estiver anormal"
+    ::= { tp-tri 23 }
+
+habTrapFreqVbpNormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a frequencia de by-pass retornar na faixa normal de operacao"
+    ::= { tp-tri 24 }
+
+habTrapSaidaEmBypass        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que o no-break transferiu sua saida para by-pass"
+    ::= { tp-tri 25 }
+
+habTrapSaidaEmInversor        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que o no-break transferiu sua saida para inversor"
+    ::= { tp-tri 26 }
+
+habTrapEmergenciaAcionada         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que a chave de emergencia passou a ser acionada"
+    ::= { tp-tri 27 }
+
+habTrapEmergenciaDesacionada         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que a chave de emergencia deixou de estar acionada"
+    ::= { tp-tri 28 }
+
+habTrapBateriaTriBaixa        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que o nivel de carga do no-break esta baixo"
+    ::= { tp-tri 29 }
+
+habTrapBateriaTriNivelOk            OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que o nivel de carga do no-break esta OK"
+    ::= { tp-tri 30 }
+
+habTrapChaveBypassAcionada          OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que a chave de by-pass manual passou a ser acionada"
+    ::= { tp-tri 31 }
+
+habTrapChaveBypassDesacionada        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que a chave de by-pass manual deixou de estar acionada"
+    ::= { tp-tri 32 }
+
+
+-- ==================================================================
+-- enterprises.sms.setup.snmp.traps.tp-comunic
+-- ==================================================================
+
+
+habTrapComunicacaoUpsOnLine        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que o agente SNMP estabelece comunicacao com o no-break"
+        ::= { tp-comunic 1 } 
+
+habTrapComunicacaoUpsOffLine        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que o agente SNMP perde comunicacao com o no-break"
+        ::= { tp-comunic 2 } 
+
+
+
+
+-- ==================================================================
+-- enterprises.sms.setup.email
+-- ==================================================================
+
+servidor        OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..29))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "IP do servidor de email"
+    ::= { email 1 }
+
+remetente       OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..29))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "endereco eletronico do remetente"
+    ::= { email 2 }        
+
+usuarioEmail  OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..29))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Nome do usuario smtp"
+    ::= { email 3 }
+
+senhaEmail  OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..29))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Senha do usuario smtp"
+    ::= { email 4 }        
+
+smtpTable  OBJECT-TYPE
+        SYNTAX  SEQUENCE OF SmtpEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+                "Uma tabela de emails, que deverao ser usados
+                como destino de mensagens de eventos no no-break"
+        ::= { email 5 }
+
+
+smtpEntry OBJECT-TYPE
+        SYNTAX  SmtpEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+                "define a sequencia da linha,
+                ou seja, 
+                as colunas que fazem parte da linha,
+                nenhuma operacao SNMP pode criar ou apagar colunas desta tabela"
+        INDEX   { smtpIndice }
+        ::= { smtpTable 1 }
+
+
+SmtpEntry ::= SEQUENCE {
+        smtpIndice  INTEGER,
+        habSmtp     INTEGER,
+        destinatario    DisplayString
+        }
+
+smtpIndice  OBJECT-TYPE
+    SYNTAX INTEGER (0.. 4)
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Indice da tabela de Enderecos IP para transmissao de eventos,
+        usado como identificacao unica da linha da tabela"
+    ::= { smtpEntry 1 }
+    
+habSmtp OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Indica se o smtp esta habilitado para este endereco"
+    ::= { smtpEntry 2 }
+
+
+destinatario    OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..29))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "endereco eletronico do destinatario"
+    ::= { smtpEntry 3 }
+
+-- ==================================================================
+-- enterprises.sms.setup.email.mensagem
+-- ==================================================================
+
+-- ==================================================================
+-- enterprises.sms.setup.email.mensagem.msg-mono
+-- ==================================================================
+
+
+habMsgEmRede        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        de retorno de rede eletrica"
+    ::= { msg-mono 1 }
+
+habMsgEmBateria        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        de queda de rede eletrica, o no-break passa a operar em bateria"
+    ::= { msg-mono 2 }
+
+habMsgBateriaOk        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que o nivel de carga do no-break esta OK"
+    ::= { msg-mono 3 }
+
+habMsgBateriaBaixa        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que o nivel de carga do no-break esta baixo"
+    ::= { msg-mono 4 }
+
+habMsgEmInversor        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break passa a operar com inversor ligado"
+    ::= { msg-mono 5 }
+
+habMsgEmBypass        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break passa a operar em by-pass"
+    ::= { msg-mono 6 }
+
+habMsgBuck        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break acionou o Buck"
+    ::= { msg-mono 7 }
+
+habMsgBoost        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break acionou o boost"
+    ::= { msg-mono 8 }
+
+habMsgUpsFalha        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        que indica se o UPS esta em falha"
+    ::= { msg-mono 9 }
+
+habMsgUpsOk        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        que indica se o UPS esta operando normalmente"
+    ::= { msg-mono 10 }
+
+habMsgSemTeste        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break terminou o auto-teste"
+    ::= { msg-mono 11 }
+
+habMsgEmTeste        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do momento em que o no-break iniciou o auto-teste"
+    ::= { msg-mono 12 }
+
+habMsgSemShutdown        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando o no-break terminou de executar um shutdown"
+    ::= { msg-mono 13 }
+
+habMsgEmShutdown        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do momento em que o no-break iniciou o shutdown"
+    ::= { msg-mono 14 }
+
+habMsgSemBeep        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        no instante em que o beep do no-break foi configurado para ficar mudo"
+    ::= { msg-mono 15 }
+
+habMsgComBeep        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        no instante em que o beep do no-break foi habilitado pela configuracao"
+    ::= { msg-mono 16 }
+
+
+
+
+-- ==================================================================
+-- enterprises.sms.setup.email.mensagem.msg-tri
+-- ==================================================================
+
+
+habMsgFalhaRecarregador         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que ocorreu falha no recarregador"
+    ::= { msg-tri 1 }
+
+habMsgRecarregadorOk         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando o recarregador saiu da falha e passou a operar em regime normal"
+    ::= { msg-tri 2 }
+
+habMsgFaseInvertida         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que as fases do no-break estao invertidas"
+    ::= { msg-tri 3 }
+
+habMsgSemFaseInvertida          OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que as fases do no-break estao operando normalmente"
+    ::= { msg-tri 4 }
+
+habMsgBateriaBaixaCritica        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break que esta funcionando em bateria,
+        passa a ter o nivel de carga critico"
+    ::= { msg-tri 5 }
+
+habMsgBateriaNivelOk        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o no-break que esta funcionando em rede,
+        deixa de ter o nivel de carga critico"
+    ::= { msg-tri 6 }
+
+habMsgSobrecarga        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que ocorreu sobrecarga no no-break"
+    ::= { msg-tri 7 }
+
+habMsgSemSobrecarga         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que deixou de acontecer sobrecarga no no-break"
+    ::= { msg-tri 8 }
+
+habMsgSobretemperatura        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que ocorreu sobre temperatura no no-break"
+    ::= { msg-tri 9 }
+
+habMsgSemSobretemperatura         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que deixou de acontecer sobre temperatura no no-break"
+    ::= { msg-tri 10 }
+
+habMsgInversorFalha         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando falha no inversor"
+    ::= { msg-tri 11 }
+
+habMsgInversorOk         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que o inversor volta a operar normalmente"
+    ::= { msg-tri 12 }
+
+habMsgFaltaDeRede          OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que aconteceu queda de rede"
+    ::= { msg-tri 13 }
+
+habMsgRedeOk         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        de retorno da rede eletrica"
+    ::= { msg-tri 14 }
+
+habMsgDefeitoFonte         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que ocorreu defeito na fonte"
+    ::= { msg-tri 15 }
+
+habMsgFonteOk        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        em que a fonte volta a operar normalmente"
+    ::= { msg-tri 16 }
+
+
+habMsgVinAnormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de entrada estiver anormal"
+    ::= { msg-tri 17 }
+
+habMsgVinNormal        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de entrada retornar na faixa normal de operacao"
+    ::= { msg-tri 18 }
+
+habMsgVbpAnormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de by-pass estiver anormal"
+    ::= { msg-tri 19 }
+
+habMsgVbpNormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de by-pass retornar na faixa normal de operacao"
+    ::= { msg-tri 20 }
+
+habMsgVoutAnormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de saida estiver anormal"
+    ::= { msg-tri 21 }
+
+habMsgVoutNormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a tensao de saida retornar na faixa normal de operacao"
+    ::= { msg-tri 22 }
+
+habMsgFreqVbpAnormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a frequencia de by-pass estiver anormal"
+    ::= { msg-tri 23 }
+
+habMsgFreqVbpNormal         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        quando a frequencia de by-pass retornar na faixa normal de operacao"
+    ::= { msg-tri 24 }
+
+habMsgSaidaEmBypass        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que o no-break transferiu sua saida para by-pass"
+    ::= { msg-tri 25 }
+
+habMsgSaidaEmInversor        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que o no-break transferiu sua saida para inversor"
+    ::= { msg-tri 26 }
+
+habMsgEmergenciaAcionada         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que a chave de emergencia passou a ser acionada"
+    ::= { msg-tri 27 }
+
+habMsgEmergenciaDesacionada         OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que a chave de emergencia deixou de estar acionada"
+    ::= { msg-tri 28 }
+
+habMsgBateriaTriBaixa        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que o nivel de carga do no-break esta baixo"
+    ::= { msg-tri 29 }
+
+habMsgBateriaTriNivelOk            OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        indicando que o nivel de carga do no-break esta OK"
+    ::= { msg-tri 30 }
+
+habMsgChaveBypassAcionada          OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que a chave de by-pass manual passou a ser acionada"
+    ::= { msg-tri 31 }
+
+habMsgChaveBypassDesacionada        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que a chave de by-pass manual deixou de estar acionada"
+    ::= { msg-tri 32 }
+
+-- ==================================================================
+-- enterprises.sms.setup.email.mensagem.msg-comunic
+-- ==================================================================
+
+
+habMsgComunicacaoUpsOnLine        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que o agente SNMP estabelece comunicacao com o no-break"
+        ::= { msg-comunic 1 } 
+
+habMsgComunicacaoUpsOffLine        OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita a captura para o evento
+        do instante em que o agente SNMP perde comunicacao com o no-break"
+        ::= { msg-comunic 2 } 
+
+
+
+
+-- ==================================================================
+-- enterprises.sms.setup.rede
+-- ==================================================================
+
+endMac    OBJECT-TYPE
+    SYNTAX DisplayString (SIZE (0..17))
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "mostra o numero de serie do endereco fisico(MAC Address)"
+        ::= { rede 1 } 
+
+netbios         OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..29))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "configura o nome do servidor"
+        ::= { rede 2 }
+
+endIp              OBJECT-TYPE
+    SYNTAX  IpAddress
+    ACCESS  read-write
+    STATUS mandatory
+    DESCRIPTION
+        "endereco IP do agente"
+        ::= { rede 3 }
+
+gateway        OBJECT-TYPE
+    SYNTAX  IpAddress
+    ACCESS  read-write
+    STATUS mandatory
+    DESCRIPTION
+        "endereco do gateway"
+        ::= { rede 4 }
+
+subrede         OBJECT-TYPE
+    SYNTAX  IpAddress
+    ACCESS  read-write
+    STATUS mandatory
+    DESCRIPTION
+        "mascara de sub-rede"
+        ::= { rede 5 }
+
+dnsPrimario     OBJECT-TYPE
+    SYNTAX  IpAddress
+    ACCESS  read-write
+    STATUS mandatory
+    DESCRIPTION
+        "endereco do servidor de DNS primario"
+        ::= { rede 6 }
+
+dnsSecundario   OBJECT-TYPE
+    SYNTAX  IpAddress
+    ACCESS  read-write
+    STATUS mandatory
+    DESCRIPTION
+        "endereco do servidor de DNS secundario"
+        ::= { rede 7 }
+
+dhcp            OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita ou desabilita o DHCP"
+        ::= { rede 8 }
+
+
+
+
+
+
+
+
+-- ==================================================================
+-- enterprises.sms.setup.periodo
+-- ==================================================================
+
+data     OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..8))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "data atual, no formato dd/mm/aa"
+    ::= { periodo 1 }
+
+horario  OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..8))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "hora atual, no formato hh:mm:ss"
+    ::= { periodo 2 }
+
+
+-- ==================================================================
+-- enterprises.sms.setup.http
+-- ==================================================================
+
+usuarioWeb    OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..16))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "usuario para acesso as paginas http de conteudo protegido"
+    ::= { http 1 }
+
+senhaWeb OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..16))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "senha para acesso as paginas http de conteudo protegido"
+    ::= { http 2 }
+
+
+
+-- ==================================================================
+-- enterprises.sms.setup.no-break
+-- ==================================================================
+
+
+habShutdownAutomatico           OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita a iniciativa do agente de enviar o 
+        comando de shutdown no caso de ocorrer falha 
+        AC ou nivel de bateria baixa."
+    ::= { no-break 1 }
+
+tempoShutdownFalhaAC            OBJECT-TYPE
+    SYNTAX INTEGER 
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Total de minutos para enviar o comando de 
+        shutdown para o no-break apos receber a 
+        indicacao de falha AC."
+    ::= { no-break 2 }
+
+tempoShutdownBateriaBaixa       OBJECT-TYPE
+    SYNTAX INTEGER 
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Total de minutos para enviar o comando de 
+        shutdown para o no-break apos receber a 
+        indicacao de Bateria Baixa."
+    ::= { no-break 3 }
+
+habAvisoFalha                OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita a iniciativa do agente de enviar 
+        um aviso SNMP(trap) de tempo repetitivo de 
+        que o no-break vai receber o comando de 
+        shutdown por ter ocorrido falha AC ou 
+        nivel de bateria baixa."
+    ::= { no-break 4 }
+
+tempoAvisoFalha              OBJECT-TYPE
+    SYNTAX INTEGER 
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Total de segundos do intervalo entre 
+        os aviso SNMP(trap) que o agente vai 
+        enviar por ter ocorrido falha AC ou nivel 
+        de bateria baixa."
+    ::= { no-break 5 }
+
+
+-- ==================================================================
+-- enterprises.sms.setup.alerta24h
+-- ==================================================================
+
+
+habAlerta24h           OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Habilita a integracao do agente com o site do alerta 24h."
+    ::= { alerta24h 1 }
+
+usuarioAlerta24h    OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..16))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "usuario para acesso as paginas http de conteudo protegido"
+    ::= { alerta24h 2 }
+
+senhaAlerta24h OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..16))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "senha para acesso as paginas http de conteudo protegido"
+    ::= { alerta24h 3 }
+
+intervaloAlerta24h	OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Intervalo de tempo entre as leituras a serem 
+        armazenadas no site do alerta 24h. Com o tempo
+        maximo de 50.000 minutos."
+    ::= { alerta24h 4 }
+
+sincronismoAlerta24h	OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Intervalo de tempo entre as para sincronizacao dos 
+        agendamentos realizados no site do alerta 24h e da
+        placa agente. Com o tempo minimo de 5 minutos e tempo
+        maximo de 1.440 minutos."
+    ::= { alerta24h 5 }
+
+
+
+
+-- ==================================================================
+-- enterprises.sms.agenda
+-- ==================================================================
+
+
+agendaTable  OBJECT-TYPE
+        SYNTAX  SEQUENCE OF AgendaEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+                "Uma tabela dos agendamentos de acoes programadas pelo usuario"
+        ::= { agenda 1 }
+
+
+agendaEntry OBJECT-TYPE
+        SYNTAX  AgendaEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+                "define a sequencia da linha,
+                ou seja, 
+                as colunas que fazem parte da linha,
+                nenhuma operacao SNMP pode criar ou apagar colunas desta tabela"
+        INDEX   { agendaIndice }
+        ::= { agendaTable 1 }
+
+
+AgendaEntry ::= SEQUENCE {
+        agendaIndice    INTEGER,
+        comando         INTEGER,
+        agendamento     DisplayString,
+        rotina			INTEGER,
+        val1            INTEGER,
+        val2            INTEGER
+        }
+
+agendaIndice  OBJECT-TYPE
+    SYNTAX INTEGER (0.. 4)
+    ACCESS not-accessible
+    STATUS mandatory
+    DESCRIPTION
+        "Indice da tabela de Enderecos IP para transmissao de eventos,
+        usado como identificacao unica da linha da tabela"
+    ::= { agendaEntry 1 }
+    
+comando OBJECT-TYPE
+    SYNTAX INTEGER {    cancelaTeste(0),
+                        testeBateriaBaixa(1),
+                        testeNSegundos(2),
+                        ligaBeep(3),
+                        desligaBeep(4),
+                        cancelaShutdown(5),
+                        shutdown(6),
+                        shutdownRestore(7),
+                        ligaRele(8),
+                        desligaRele(9) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "Indica qual o comando agendado para o no-break"
+    ::= { agendaEntry 2 }
+
+agendamento    OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..14))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "data e hora do agendamento, no formato dd/mm/aa hh:mm"
+    ::= { agendaEntry 3 }
+
+rotina    OBJECT-TYPE
+    SYNTAX INTEGER {    unico(1),
+                        diario(2),
+                        semanal(3),
+                        mensal(4) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "rotina da acao agendada
+        o comando deve ser executado
+        uma unica vez, diariamente,
+        semanalmente ou mensalmente"
+    ::= { agendaEntry 4 }
+
+val1    OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "informacao extra do comando
+        teste: duracao do teste em segundos
+        restore: tempo em minutos
+        rele: numero do rele a ser acionado"
+    ::= { agendaEntry 5 }
+
+val2    OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "informacao extra do comando
+        shutdown: tempo em segundos para entrar em shutdown"
+    ::= { agendaEntry 6 }
+
+
+-- ==================================================================
+-- enterprises.sms.log
+-- ==================================================================
+
+-- ==================================================================
+-- enterprises.sms.log.eventos
+-- ==================================================================
+
+
+posicao    OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..8))
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "usando a data atraves do formato dd/mm/aa, 
+        mostra a data do registro mais antigo nao coletado pelo usuario,
+        ao inserir uma data, ira reposicionar a leitura de registros 
+        armazenados nesta data, ou a mais proxima que existir"
+    ::= { eventos 1 }
+
+registro    OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..44))
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "data e hora do evento registrado e descricao
+        a cada leitura executada, avanca para o proximo registro"
+    ::= { eventos 2 }
+
+memoria    OBJECT-TYPE
+    SYNTAX INTEGER { livre(0), lotado(1) }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "status do espaco de memoria reservado para o log de eventos,
+        indica se a memoria para armazenamento esta lotada,
+        ou se ainda existe espaco livre para registros"
+    ::= { eventos 3 }
+
+quantidade    OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "quantidade de registros nao recolhidos pelo usuario"
+    ::= { eventos 4 }
+
+sobrescrita    OBJECT-TYPE
+    SYNTAX INTEGER { desabilitado(0), habilitado(1) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "em caso de memoria lotada com registros de eventos ainda nao recolhidos,
+        permite sobrescrever os antigos registros com as novas informacoes"
+    ::= { eventos 5 }
+
+
+
+-- ==================================================================
+-- enterprises.sms.log.dados
+-- ==================================================================
+
+apontamento    OBJECT-TYPE
+    SYNTAX  DisplayString (SIZE (0..139))
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+        "data e hora das leituras registradas no no-break
+        a cada dado coletado, avanca para o proximo registro"
+    ::= { dados 1 }
+
+atualizacao       OBJECT-TYPE
+    SYNTAX INTEGER {    desabilitado(0),
+                        porSegundo(1), 
+                        porMinuto(2), 
+                        porHora(3), 
+                        diaria(4), 
+                        semanal(5), 
+                        mensal(6) }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "tipo de atualizacao a ser usado para armazenar os dados da leitura"
+    ::= { dados 2 }
+
+intervalo       OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "tempo do intervalo de leituras a serem registradas,
+        usa o tipo de atualizacao, exemplo:
+        atualizacao porSegundo e intervalo 10, registra a cada 10 segundos
+        atualizacao porMinuto e intervalo 1, registra a cada 1 minuto
+        atualizacao porHora e intervalo 5, registra a cada 5 horas
+        atualizacao diaria e intervalo 3, registra a cada 3 dias
+        atualizacao semanal e intervalo 2, registra a cada 2 semanas
+        atualizacao mensal e intervalo 4, registra a cada 4 meses
+        ATENCAO
+        tempo menor do que 10 segundos nao e permitido"
+    ::= { dados 3 }
+
+restaura       OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+        "quando escrito, restaura a posicao do registro 
+        mais antigo armazenado no log de dados"
+    ::= { dados 4 }
+
+
+-- ==================================================================
+-- enterprises.sms              TRAPS
+-- ==================================================================
+
+
+
+
+trapEventoEmRede        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { redeOuBateria }
+        DESCRIPTION
+                "reporta evento de retorno da rede eletrica"
+        ::= 1
+
+trapEventoEmBateria        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { redeOuBateria }
+        DESCRIPTION
+                "reporta evento de queda de rede eletrica, o no-break passa a operar em bateria"
+        ::= 2
+
+trapEventoBateriaOk        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusBateria }
+        DESCRIPTION
+                "reporta evento indicando que o nivel de carga do no-break esta OK"
+        ::= 3
+
+trapEventoBateriaBaixa        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusBateria }
+        DESCRIPTION
+                "reporta evento indicando que o nivel de carga do no-break esta baixa"
+        ::= 4
+
+
+trapEventoEmInversor        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { inversorOuBypass }
+        DESCRIPTION
+                "reporta evento em que o no-break passa a operar com inversor ligado"
+        ::= 5
+
+trapEventoEmBypass        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { inversorOuBypass }
+        DESCRIPTION
+                "reporta evento em que o no-break passa a operar em by-pass"
+        ::= 6
+
+trapEventoBuck        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { buckOuBoost }
+        DESCRIPTION
+                "reporta evento em que o no-break acionou o Buck"
+        ::= 7
+
+trapEventoBoost        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { buckOuBoost }
+        DESCRIPTION
+                "reporta evento em que o no-break acionou o boost"
+        ::= 8
+
+trapEventoUpsFalha        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusUps }
+        DESCRIPTION
+                "reporta evento que indica se o UPS esta em falha"
+        ::= 9
+
+trapEventoUpsOk        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusUps }
+        DESCRIPTION
+                "reporta evento que indica se o UPS esta operando normalmente"
+        ::= 10
+
+trapEventoSemTeste        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { autoTeste }
+        DESCRIPTION
+                "reporta evento em que o no-break terminou o auto-teste"
+        ::= 11
+
+trapEventoEmTeste        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { autoTeste }
+        DESCRIPTION
+                "reporta evento do momento em que o no-break iniciou o auto-teste"
+        ::= 12
+
+trapEventoSemShutdown        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { stsShutdown }
+        DESCRIPTION
+                "reporta evento quando o no-break terminou de executar um shutdown"
+        ::= 13
+
+trapEventoEmShutdown        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { stsShutdown }
+        DESCRIPTION
+                "reporta evento do momento em que o no-break iniciou o shutdown"
+        ::= 14
+
+trapEventoSemBeep        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { beep }
+        DESCRIPTION
+                "reporta evento no instante em que o beep do no-break foi configurado para ficar mudo"
+        ::= 15
+
+trapEventoComBeep        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { beep }
+        DESCRIPTION
+                "reporta evento no instante em que o beep do no-break foi habilitado pela configuracao"
+        ::= 16
+
+
+trapEventoFalhaRecarregador         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { recarregador }
+        DESCRIPTION
+                "reporta evento indicando que ocorreu falha no recarregador"
+        ::= 17
+
+trapEventoRecarregadorOk         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { recarregador }
+        DESCRIPTION
+                "reporta evento indicando o recarregador saiu da falha e passou a operar em regime normal"
+        ::= 18
+
+trapEventoFaseInvertida         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { faseInvertida }
+        DESCRIPTION
+                "reporta evento indicando que as fases do no-break estao invertidas"
+        ::= 19
+
+trapEventoSemFaseInvertida          TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { faseInvertida }
+        DESCRIPTION
+                "reporta evento indicando que as fases do no-break estao operando normalmente"
+        ::= 20
+
+trapEventoBateriaBaixaCritica        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { bateriaBaixaCritica }
+        DESCRIPTION
+                "reporta evento em que o no-break que esta funcionando em bateria, passa a ter o nivel de carga critica"
+        ::= 21
+
+trapEventoBateriaNivelOk        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { bateriaBaixaCritica }
+        DESCRIPTION
+                "reporta evento em que o no-break que esta funcionando em rede, deixa de ter o nivel de carga critico"
+        ::= 22
+
+trapEventoSobrecarga        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { sobrecarga }
+        DESCRIPTION
+                "reporta evento em que ocorreu sobrecarga no no-break"
+        ::= 23
+
+trapEventoSemSobrecarga         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { sobrecarga }
+        DESCRIPTION
+                "reporta evento em que deixou de acontecer sobrecarga no no-break"
+        ::= 24
+
+trapEventoSobretemperatura        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { sobretemperatura }
+        DESCRIPTION
+                "reporta evento em que ocorreu sobre temperatura no no-break"
+        ::= 25
+
+trapEventoSemSobretemperatura         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { sobretemperatura }
+        DESCRIPTION
+                "reporta evento em que deixou de acontecer sobre temperatura no no-break"
+        ::= 26
+
+trapEventoInversorFalha         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { inversor }
+        DESCRIPTION
+                "reporta evento indicando falha no inversor"
+        ::= 27
+
+trapEventoInversorOk         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { inversor }
+        DESCRIPTION
+                "reporta evento em que o inversor volta a operar normalmente"
+        ::= 28
+
+trapEventoFaltaDeRede          TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { faltaDeRede }
+        DESCRIPTION
+                "reporta evento em que aconteceu queda de rede"
+        ::= 29
+
+trapEventoRedeOk         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { faltaDeRede }
+        DESCRIPTION
+                "reporta evento de retorno da rede eletrica"
+        ::= 30
+
+trapEventoDefeitoFonte         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { defeitoNaFonte }
+        DESCRIPTION
+                "reporta evento em que ocorreu defeito na fonte"
+        ::= 31
+
+trapEventoFonteOk        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { defeitoNaFonte }
+        DESCRIPTION
+                "reporta evento em que a fonte volta a operar normalmente"
+        ::= 32
+
+trapEventoVinAnormal         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusVin }
+        DESCRIPTION
+                "reporta evento quando a tensao de entrada estiver anormal"
+        ::= 33
+
+trapEventoVinNormal        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusVin }
+        DESCRIPTION
+
+                "reporta evento quando a tensao de entrada retornar na faixa normal de operacao"
+        ::= 34
+
+trapEventoVbpAnormal         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusVbp }
+        DESCRIPTION
+                "reporta evento quando a tensao de by-pass estiver anormal"
+        ::= 35
+
+trapEventoVbpNormal         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusVbp }
+        DESCRIPTION
+                "reporta evento quando a tensao de by-pass retornar na faixa normal de operacao"
+        ::= 36
+
+trapEventoVoutAnormal         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusVout }
+        DESCRIPTION
+                "reporta evento quando a tensao de saida estiver anormal"
+        ::= 37
+
+trapEventoVoutNormal         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusVout }
+        DESCRIPTION
+                "reporta evento quando a tensao de saida retornar na faixa normal de operacao"
+        ::= 38
+
+trapEventoFreqVbpAnormal         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusFreqVbp }
+        DESCRIPTION
+                "reporta evento quando a frequencia de by-pass estiver anormal"
+        ::= 39
+
+trapEventoFreqVbpNormal         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusFreqVbp }
+        DESCRIPTION
+                "reporta evento quando a frequencia de by-pass retornar na faixa normal de operacao"
+        ::= 40
+
+trapEventoSaidaEmBypass        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { saidaEmInversorOuBypass }
+        DESCRIPTION
+                "reporta evento do instante em que o no-break transferiu sua saida para bypass"
+        ::= 41
+
+trapEventoSaidaEmInversor        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { saidaEmInversorOuBypass }
+        DESCRIPTION
+                "reporta evento do instante em que o no-break transferiu sua saida para inversor"
+        ::= 42
+
+trapEventoEmergenciaAcionada         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { chaveEmergencia }
+        DESCRIPTION
+                "reporta evento do instante em que a chave de emergencia passou a ser acionada"
+        ::= 43
+
+trapEventoEmergenciaDesacionada         TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { chaveEmergencia }
+        DESCRIPTION
+                "reporta evento do instante em que a chave de emergencia deixou de estar acionada"
+        ::= 44
+
+trapEventoBateriaTriBaixa        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusBateriaTri }
+        DESCRIPTION
+                "reporta evento indicando que o nivel de carga do no-break esta baixa"
+        ::= 45
+
+trapEventoBateriaTriNivelOk            TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { statusBateriaTri }
+        DESCRIPTION
+                "reporta evento indicando que o nivel de carga do no-break esta OK"
+        ::= 46
+
+trapEventoChaveBypassAcionada          TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { chaveDeBypass }
+        DESCRIPTION
+                "reporta evento do instante em que a chave de by-pass manual passou a ser acionada"
+        ::= 47
+
+trapEventoChaveBypassDesacionada        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { chaveDeBypass }
+        DESCRIPTION
+                "reporta evento do instante em que a chave de by-pass manual deixou de estar acionada"
+        ::= 48
+
+trapEventoComunicacaoUpsOnLine        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { stsComunicacao }
+        DESCRIPTION
+                "reporta evento do instante em que o agente SNMP estabelece comunicacao com o no-break"
+        ::= 49
+
+trapEventoComunicacaoUpsOffLine        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { stsComunicacao }
+        DESCRIPTION
+                "reporta evento do instante em que o agente SNMP perde comunicacao com o no-break"
+        ::= 50
+
+trapEventoAvisoShutdown        TRAP-TYPE
+        ENTERPRISE  sms
+        VARIABLES { stsShutdown }
+        DESCRIPTION
+                "o no-break indica falha AC ou nivel de bateria baixa, 
+                o shutdown automatico sera executado, este aviso ira se
+                repetir de tempo em tempos ate o eventual desligamento
+                ou o fim das duas falhas indicadas."
+        ::= 51
+
+
+
+END   

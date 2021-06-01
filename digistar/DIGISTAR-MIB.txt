@@ -1,0 +1,64 @@
+DIGISTAR-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+       enterprises, MODULE-IDENTITY,
+       OBJECT-TYPE, OBJECT-IDENTITY FROM SNMPv2-SMI;
+
+digistarMIB MODULE-IDENTITY
+
+        LAST-UPDATED "201110280000Z"  -- 28 October 2011
+        ORGANIZATION    "Digistar Telecomunication, Inc."
+        CONTACT-INFO
+                "       Digistar 
+
+                Postal: Sao Leopoldo, RS
+                        Brazil
+
+                Tel: +
+
+                E-mail: engenharia@digistar.com.br"
+        DESCRIPTION
+                "MIB Digistar."
+        REVISION "201110280000Z"  -- 28 October 2011
+	DESCRIPTION
+	    "Added digistarModules"
+        REVISION "201108110000Z"  -- 11 August 2011
+	DESCRIPTION
+            "The following changes were made:
+             (1) Object digistarGeneric were removed.
+             (2) Object digistarProducts were added.
+             (3) Object digistarMgmt were added."
+        REVISION "200809080000Z"  -- 8 September 2008
+	DESCRIPTION
+            "Initial revision"
+::= { enterprises 29450 }
+
+--
+-- OBJECTS
+--
+digistarProducts OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+    "OBJECT IDENTIFIER from which sysObjectID values of the Digistar's products are assigned."
+    ::= { digistarMIB 1 }
+
+digistarExperimental OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+    "OBJECT IDENTIFIER from which experimental MIBs may be temporarily based."
+    ::= { digistarMIB 2 }
+
+digistarMgmt OBJECT-IDENTITY
+    STATUS          current
+    DESCRIPTION
+    "The main subtree for delivered MIBs."
+    ::= { digistarMIB 3 }
+
+digistarModules OBJECT-IDENTITY
+    STATUS	current
+    DESCRIPTION
+    "digistarModules provides a root object identifier
+     from which MODULE-IDENTITY values may be assigned."
+    ::= { digistarMIB 4 }
+
+
+END

@@ -1,0 +1,1340 @@
+IPRadio DEFINITIONS ::= BEGIN
+
+-- Title:       IPRadio MIB version 1.0 in concise format
+-- Date:        2012.08.23
+-- Contact:     nieqingrong@baycomwireless.com
+
+IMPORTS
+        enterprises,
+        NetworkAddress,
+        IpAddress,
+        Counter,
+        Gauge,
+        TimeTicks       FROM RFC1155-SMI
+		MODULE-IDENTITY, 
+		OBJECT-TYPE, 
+		OBJECT-IDENTITY,
+		Integer32,
+		Unsigned32,
+		IpAddress,
+		Counter64
+   		FROM SNMPv2-SMI
+		DisplayString,
+		MacAddress
+		FROM SNMPv2-TC;
+	
+baycom         OBJECT IDENTIFIER ::=   { enterprises 39390 }
+      
+ipradio        OBJECT IDENTIFIER ::=   { baycom 10 }
+
+system         OBJECT IDENTIFIER ::=   { ipradio 1 } 
+remote         OBJECT IDENTIFIER ::=   { ipradio 2 }
+management     OBJECT IDENTIFIER ::=   { ipradio 3 }
+rf             OBJECT IDENTIFIER ::=   { ipradio 4 }
+modem          OBJECT IDENTIFIER ::=   { ipradio 5 }
+ethernet       OBJECT IDENTIFIER ::=   { ipradio 6 }
+performance    OBJECT IDENTIFIER ::=   { ipradio 7 }        
+alarm          OBJECT IDENTIFIER ::=   { ipradio 8 }        
+log            OBJECT IDENTIFIER ::=   { ipradio 9 }        
+loopback       OBJECT IDENTIFIER ::=   { ipradio 10 }        
+
+--system ====================================================================
+
+productName OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..20))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Name of Product."
+        ::= { system 1 }
+
+productDescription OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Description of Product."
+        ::= { system 2 }   
+
+installSiteName OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "Site name of installed."
+        ::= { system 3 }
+
+installTime OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..20))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "The date and time of installed."
+        ::= { system 4 }
+
+contact OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "The contacted name, telephone number, etc."
+        ::= { system 5 }
+
+deviceSn OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Device SN."
+        ::= { system 6 }
+
+devicePn OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Device PN."
+        ::= { system 7 }      
+        
+systemTime OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..20))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "System time, like YYYY-MM-DD HH:MM:SS."
+        ::= { system 10 }      
+
+timeZone OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "The zone of time, like +8, -1, etc."
+        ::= { system 12 }      
+
+upTime OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only           
+        STATUS  mandatory
+        DESCRIPTION
+                "Total operating time."
+        ::= { system 14 }
+
+bbTemperature OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..6))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Temperature on baseband processor in Celsius."
+        ::= { system 20 }
+
+platSWVersion OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The platform software Version. "
+        ::= { system 30 }  
+
+nmsVersion OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "NMS software Version. "
+        ::= { system 31 }  
+
+modemSWVersion  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The modem software Version."
+        ::= { system 32 }
+
+cpldSWVersion  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The CPLD software Version."
+        ::= { system 33 }
+
+freeSpace OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The free flash disk space, in kbytes."
+        ::= { system 34 }
+
+ibfHWVersion  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The baseband board hardware version."
+        ::= { system 35 }   
+
+ibfHWPN  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The baseband board hardware PN."
+        ::= { system 36 }   
+
+irfHWVersion  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The RF board hardware version."
+        ::= { system 37 }   
+
+irfHWPN  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The RF board hardware PN."
+        ::= { system 38 }   
+
+bank1NMSVersion OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The bank1 NMS software Version. "
+        ::= { system 41 }  
+
+bank2NMSVersion OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The bank2 NMS software Version. "
+        ::= { system 42 }  
+
+bank1ModemSWVersion  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The bank1 Modem software Version."
+        ::= { system 43 }
+
+bank2ModemSWVersion  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The bank2 Modem software Version."
+        ::= { system 44 }
+
+curNMSBank OBJECT-TYPE
+        SYNTAX  INTEGER {
+        bank1(1),
+        bank2(2) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The current NMS SW bank."
+        ::= { system 47 }
+
+curModemBank OBJECT-TYPE
+        SYNTAX  INTEGER {
+        bank1(1),
+        bank2(2) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The current Modem SW bank."
+        ::= { system 48 }
+
+licenseStatus OBJECT-TYPE
+        SYNTAX  INTEGER {
+        nolicense(0),
+        invalid(1),
+        valid(2) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The license certificational status."
+        ::= { system 50 }
+
+--Remote ----------------------------------------------------------------------------------------
+
+remoteIPaddress OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Remote IP Address."
+        ::= { remote 1 }                     
+ 
+remoteName OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Remote site name."
+        ::= { remote 2 }                     
+
+remoteTxFrequency OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Rremote current Tx frequency of KHz."
+        ::= { remote 3 }                     
+
+remoteRxFrequency OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Rremote current Rx frequency of KHz."
+        ::= { remote 4 }                     
+
+remoteTxpower OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..5))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Remote current Tx power dBm."
+        ::= { remote 5 }                     
+
+remoteRxlevel OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..5))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Remote current Rx Level dBm."
+        ::= { remote 6 }                     
+
+remoteSNR OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..6))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Remote SNR on DB."
+        ::= { remote 7 }                     
+
+remoteTemperature OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..6))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Remote temperature."
+        ::= { remote 8 }                     
+
+remoteupTime OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Remote uptime."
+        ::= { remote 9 }                     
+
+--management ====================================================================
+
+ipAddress OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "IP Address of device."
+        ::= { management 1 }           
+
+netmask OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "IP network Mask of device. "
+        ::= { management 2 }
+
+mac     OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(17))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "IP MAC Address of device as 01:02:03:04:05:06."
+        ::= { management 3 }   
+
+gateway OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "IP Gateway of device."
+        ::= { management 4 }        
+
+dns OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "DNS of device."
+        ::= { management 5 }        
+
+snmpEnableStatus   OBJECT-TYPE
+        SYNTAX    INTEGER  {  
+                  disable(0),
+                  enable(1)}
+        MAX-ACCESS	read-write
+        STATUS		current
+        DESCRIPTION
+                    "If the snmp agent is enabled."
+	    ::= { management 10 }
+  
+snmpVersion   OBJECT-TYPE
+        SYNTAX    INTEGER  {  
+                  all(0),
+                  v1(1),
+                  v2c(2),
+                  v3(3)  }
+        MAX-ACCESS	read-write
+        STATUS      current
+        DESCRIPTION
+                    "The current snmp version."
+	    ::= { management 11 }
+                     
+trapEnableStatus   OBJECT-TYPE
+        SYNTAX    INTEGER  {  
+                  disable(0),
+                  enable(1)}
+        MAX-ACCESS	read-write
+        STATUS		current
+        DESCRIPTION
+                    "If the trap is enabled."
+	    ::= { management 12 }
+
+trapCommunityName	OBJECT-TYPE
+        SYNTAX      DisplayString (SIZE (0..20))
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+                    "Set TRAP Community Name to be used . This will be effect atfer restarted. "
+	    ::= { management 13 }
+
+trapPort   OBJECT-TYPE
+        SYNTAX    INTEGER 
+        MAX-ACCESS     read-write
+        STATUS         current
+        DESCRIPTION
+                    "The port which the trap message will send to. The default is 162."
+	    ::= { management 14 }
+
+trapManagerHostIP1 OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The first host IP which can receive the trap notifications.The 0.0.0.0 means none."
+        ::= { management 15 }         
+
+trapManagerHostIP2 OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The second host IP which can receive the trap notifications.The 0.0.0.0 means none."
+        ::= { management 16 }         
+
+trapManagerHostIP3 OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The third host IP which can receive the trap notifications.The 0.0.0.0 means none."
+        ::= { management 17 }         
+
+snmpV1ReadCommunity	OBJECT-TYPE
+        SYNTAX      DisplayString (SIZE (0..20))
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+                    "Set SNMP v1/v2c Read Community String to be used . This will be effect atfer restarted. "
+	    ::= { management 20 }
+
+snmpV1WriteCommunity	OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..20))
+        MAX-ACCESS      read-write
+        STATUS          current
+        DESCRIPTION
+                    "Set SNMP v1/v2c Write Community String to be used. This will be effect atfer restarted."
+	    ::= { management 21 }
+
+
+snmpV3UserName        OBJECT-TYPE
+        SYNTAX        DisplayString (SIZE (0..30))
+        MAX-ACCESS    read-write
+        STATUS        current
+        DESCRIPTION
+            "Set SNMP v3 user name. "
+	    ::= { management 22 }
+
+snmpV3AuthProtocol   OBJECT-TYPE
+        SYNTAX    INTEGER  {
+                  noAuth(0),
+                  md5(1),
+                  sha1(2) }
+        MAX-ACCESS  read-write
+        STATUS      current
+        DESCRIPTION
+                    "The auth protocol type of snmp v3."
+	    ::= { management 23 }
+
+snmpV3AuthPassword    OBJECT-TYPE
+        SYNTAX        DisplayString (SIZE (0..30))
+        MAX-ACCESS    read-write
+        STATUS        current
+        DESCRIPTION
+            "The auth password of snmp v3. "
+	    ::= { management 24 }
+
+snmpV3PrivProtocol   OBJECT-TYPE
+        SYNTAX    INTEGER  {
+                  noPriv(0),
+                  des(1),
+                  aes(2) }
+        MAX-ACCESS   read-write
+        STATUS       current
+        DESCRIPTION
+                    "The privacy protocol type of snmp v3."
+	    ::= { management 25 }
+
+snmpV3PrivPassword    OBJECT-TYPE
+        SYNTAX        DisplayString (SIZE (0..30))
+        MAX-ACCESS    read-write
+        STATUS        current
+        DESCRIPTION
+            "The privacy password of snmp v3. "
+	    ::= { management 26 }
+
+netSNTPEnable        OBJECT-TYPE
+        SYNTAX       INTEGER  {  
+                  disable(0),
+                  enable(1)  
+                  }
+        MAX-ACCESS   read-write
+        STATUS       current
+        DESCRIPTION
+                    " Determines whether or not the SNTP is enabled."
+        ::= { management 30 }
+
+netSNTPServerIP OBJECT-TYPE
+        SYNTAX  IpAddress
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The SNTP server IPAddress."
+        ::= { management 31 }
+
+restartCPU OBJECT-TYPE
+        SYNTAX  INTEGER {
+        restart(1) }
+        ACCESS  write-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Write 1 to restart CPU."
+        ::= { management 51 }         
+
+--rf ====================================================================
+ 
+rfTxFrequency OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "Transmitter frequency KHz."
+        ::= { rf 1 }        
+
+rfMinTxFrequency OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "Minimum transmitter frequency KHz."
+        ::= { rf 2 }        
+
+rfMaxTxFrequency OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "Maximum transmitter frequency KHz."
+        ::= { rf 3 }        
+
+rfRxFrequency OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "Receiver frequency KHz."
+        ::= { rf 4 }        
+
+rfMinRxFrequency OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "Minimum receiver frequency KHz."
+        ::= { rf 5 }        
+
+rfMaxRxFrequency OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "Maximum receiver frequency kHz."
+        ::= { rf 6 }        
+
+rfTxPower OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "Transmitter power 0.1 dBm."
+        ::= { rf 7 } 
+
+rfMinTxPower OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10)) 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "minimum txpower 0.1 dBm."
+        ::= { rf 8 }        
+
+rfMaxTxPower OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10)) 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "maxmum txpower 0.1 dBm."
+        ::= { rf 9 }        
+
+rfTRSpacing OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..30)) 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "T/R Spacing KHz."
+        ::= { rf 10 }           
+
+rfSide OBJECT-TYPE
+        SYNTAX  INTEGER {
+        low(0),
+        high(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The side type of ODU."
+        ::= { rf 11 }
+
+rfTxMute OBJECT-TYPE
+        SYNTAX  INTEGER {
+        muteoff(0),
+        muteon(1) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The status of TX power."
+        ::= { rf 13 }
+
+rfRxLevel OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "Receiver signal level dBm."
+        ::= { rf 14 } 
+
+
+rfATPCEnable OBJECT-TYPE
+        SYNTAX  INTEGER {
+        disable(0),
+        enable(1)}
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "The ATPC enable status."
+        ::= { rf 20 }         
+
+rfATPCMaxRxlevel OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE(0..6))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "The ATPC Maximum Rx Level.Unit is 0.1 dBm."
+        ::= { rf 21 }         
+
+rfATPCMinRxlevel OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE(0..6))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "The ATPC Minimum Rx Level.Unit is 0.1 dBm."
+        ::= { rf 22 }         
+
+rfATPCMaxStep OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE(0..6))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "The ATPC Maximum Tx Step.Unit is 0.1 dB."
+        ::= { rf 23 }         
+
+rfATPCMinStep OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE(0..6))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+                "The ATPC Minimum Tx Step.Unit is 0.1  dB."
+        ::= { rf 24 }         
+  
+rfTemperature OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE(0..5))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The RF module temperature in ceise."
+        ::= { rf 27 }         
+   
+--modem ----------------------------------------------------------------
+
+modemChannelBandwidth OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..7))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The  channel bandwidth in KHz. Such as: 3500,5000,7000,10000,14000,15000,20000,28000,30000,40000,50000,56000,112000."
+        ::= { modem 1 } 
+
+modemModuleMode OBJECT-TYPE
+        SYNTAX  INTEGER {
+        mQPSK(0),
+        m16QAM(1),
+        m32QAM(2),
+        m64QAM(3),
+        m128QAM(4),
+        m256QAM(5),
+        m512QAM(6),
+        m1024QAM(7),
+        acm(15)} 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "Modulate mode."
+        ::= { modem 2 }           
+
+modemACMMinModuleMode OBJECT-TYPE
+        SYNTAX  INTEGER {
+        mQPSK(0),
+        m16QAM(1),
+        m32QAM(2),
+        m64QAM(3),
+        m128QAM(4),
+        m256QAM(5),
+        m512QAM(6),
+        m1024QAM(7)}
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The ACM minimum modulate mode."
+        ::= { modem 3 }           
+
+modemACMMaxModuleMode OBJECT-TYPE
+        SYNTAX  INTEGER {
+        mQPSK(0),
+        m16QAM(1),
+        m32QAM(2),
+        m64QAM(3),
+        m128QAM(4),
+        m256QAM(5),
+        m512QAM(6),
+        m1024QAM(7)}
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The ACM maximum modulate mode."
+        ::= { modem 4 }           
+
+modemServiceBandwidth OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The  service bandwidth in Kbps."
+        ::= { modem 5 } 
+
+modemSignalOutputMode OBJECT-TYPE
+        SYNTAX  INTEGER {
+        spectrum(0),
+        point(1)}
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The signal output mode."
+        ::= { modem 7 }           
+
+modemDataSource OBJECT-TYPE
+        SYNTAX  INTEGER {
+        internalBitTest(0),
+        ethernet(1),
+        sdh(2) }
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The selected data source."
+        ::= { modem 8 }                 
+        
+restartModem OBJECT-TYPE
+        SYNTAX  INTEGER {
+        restart(1) }
+        ACCESS  write-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Write 1 to restart modem."
+        ::= { modem 20 }         
+
+-- ethernet ----------------------------------------------------------------
+
+ethServicePort OBJECT-TYPE
+        SYNTAX  INTEGER {
+        optical(0),
+        rj45(1) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The selected link port. "
+        ::= { ethernet 1 } 
+
+ethLinkStatus OBJECT-TYPE
+        SYNTAX  INTEGER {
+        linkdown(0),
+        linkup(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The ethernet link status. "
+        ::= { ethernet 3 } 
+
+
+ethLinkSpeed OBJECT-TYPE
+        SYNTAX  INTEGER {
+        s10Mbps(0),
+        s100Mbps(1),
+        s1000Mbps(2) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The link speed of service port. "
+        ::= { ethernet 15 }
+
+ethLinkDuplexMode OBJECT-TYPE
+        SYNTAX  INTEGER {
+        halfduplex(0),
+        fullduplex(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The link Duplex mode of service port. "
+        ::= { ethernet 16 } 
+
+ethRxBroadPackets OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The received broadcast packets."
+        ::= { ethernet 20 } 
+
+ethRxPausePackets OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The received pause packets."
+        ::= { ethernet 21 } 
+
+ethRxMultiPackets OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The received multicast packets."
+        ::= { ethernet 22 } 
+
+ethRxGoodBytes OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..20))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The received good bytes."
+        ::= { ethernet 30 } 
+
+ethRxBadBytes OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..20))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The received bad bytes."
+        ::= { ethernet 31 } 
+
+ethTxBroadPackets OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The transmited broadcast packets."
+        ::= { ethernet 35 } 
+
+ethTxPausePackets OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The transmited pause packets."
+        ::= { ethernet 36 } 
+
+ethTxMultiPackets OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The transmited multicast packets."
+        ::= { ethernet 37 } 
+
+ethTxGoodBytes OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..20))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The transmited good bytes."
+        ::= { ethernet 41 } 
+
+ethTxFailBytes OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..20))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The transmited failed bytes."
+        ::= { ethernet 43 } 
+
+ethSTPEnable OBJECT-TYPE
+        SYNTAX  INTEGER {
+        disable(0),
+        enable(1) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "If the STP module is enabled. "
+        ::= { ethernet 201 } 
+
+ethSTPPriority  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The STP bridge priority, such as 0x8000."
+        ::= { ethernet 202 } 
+ 
+ethMaxPacketLength  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION  
+        		"The maximum packet length."
+        ::= { ethernet 901 } 
+                                      
+--performance ----------------------------------------------------------------
+
+perfMaximumRSL OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The historical maximum RSL. dBm"
+        ::= { performance 1 } 
+
+perfMinimumRSL OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The historical minimum RSL. dBm"
+        ::= { performance 2 } 
+                            
+perfCurrentRSL OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The current RSL. dBm"
+        ::= { performance 3 } 
+
+perfMaximumSNR OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The historical maximum SNR. dB"
+        ::= { performance 4 } 
+
+perfMinimumSNR OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The historical minimum SNR. dB"
+        ::= { performance 5 } 
+
+perfCurrentSNR OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The current SNR. dB"
+        ::= { performance 6 } 
+
+perfDataRate  OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The current data rate in kbps."
+        ::= { performance 7 } 
+
+perfBER OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Frame Error rate."
+        ::= { performance 8 }  
+
+
+perfStatisicSeconds OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE(0..20))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+                "The total tested seconds. "
+        ::= { performance 12 }         
+
+perfResultClear OBJECT-TYPE
+        SYNTAX  INTEGER   
+        {
+           clear(1)
+           }
+        ACCESS  write-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Clear the tested statistic result."
+        ::= { performance 13 }         
+
+-- alarm ----------------------------------------------------------------
+
+alarmOfCPU OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The Status of CPU alarm."
+        ::= { alarm 1 }
+
+alarmOfModem OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The Status of modem alarm."
+        ::= { alarm 2 }
+
+alarmOfRF OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The Status of RF alarm."
+        ::= { alarm 3 }
+
+alarmOfEth OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The Status of ethernet alarm."
+        ::= { alarm 4 }
+
+alarmOfRemote OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The Status of remote alarm. "
+        ::= { alarm 5 }
+      
+alarmOfBER OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The Status of BER alarm. "
+        ::= { alarm 11 }
+
+alarmOfTemperature OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The Status of temperature alarm. "
+        ::= { alarm 12 }
+
+alarmOfRFPLL OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The status of RF PLL alarm. "
+        ::= { alarm 13 }
+
+alarmOfIFPLL OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The status of IF PLL Alarm. "
+        ::= { alarm 14 } 
+
+alarmOfRxLevel OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The status of Rx level low Alarm. "
+        ::= { alarm 15 } 
+ 
+alarmOfClockPLL OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The status of clock PLL Alarm. "
+        ::= { alarm 16 } 
+
+alarmOfPACurrent OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The status of PA current Alarm. "
+        ::= { alarm 17 } 
+
+alarmOfTxPower OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION 
+                "The status of Tx power Alarm. "
+        ::= { alarm 18 } 
+
+alarmBERThreshold OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The threshold of BER Alarm, like 1.00E-08. "
+        ::= { alarm 20 } 
+ 
+alarmTempHighThreshold OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The threshold of temperature high alarm. "
+        ::= { alarm 21 } 
+
+alarmTempLowThreshold OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The threshold of temperature low alarm. "
+        ::= { alarm 22 } 
+
+alarmRxAlarmLevel OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The threshold of Rx level low Alarm, Unit is dBm. "
+        ::= { alarm 23 } 
+
+alarmTxpowerThreshold OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..10))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The threshold of Tx power Alarm, Unit is dBm. "
+        ::= { alarm 24 } 
+
+--log ----------------------------------------------------------------
+
+logEnableStatus OBJECT-TYPE
+        SYNTAX  INTEGER {
+        disable(0),
+        enable(1) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The status of recording log. "
+        ::= { log 1 } 
+
+logMaxRecordNumber OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE(0..4))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The maximum record number that maybe writen. "
+        ::= { log 2 }
+
+logSyslogEnable  OBJECT-TYPE
+        SYNTAX   INTEGER  {  
+                 disable(0),
+                 enable(1)  
+                 }
+        MAX-ACCESS   read-write
+        STATUS       current
+        DESCRIPTION
+                    " Determines whether or not the Syslog function is enabled."
+        ::= { log 3 }
+
+logSysLogServerIP     OBJECT-TYPE
+ 		SYNTAX        IpAddress
+		MAX-ACCESS    read-write
+		STATUS        current
+		DESCRIPTION
+		      "IP Address of SysLog Server ."
+		::= { log 4 }
+
+logClear OBJECT-TYPE
+        SYNTAX  INTEGER   
+        {
+             clear(1)
+           }
+        ACCESS  write-only
+        STATUS  mandatory
+        DESCRIPTION
+                "Clear the all logs."
+        ::= { log 5 }  
+               
+logCount OBJECT-TYPE
+	   SYNTAX  Integer32
+	   MAX-ACCESS  read-only
+	   STATUS  current
+ 	   DESCRIPTION
+      	  " Returns the number of logs in the system."
+		::= { log 6 }
+
+logTable OBJECT-TYPE
+ 	   SYNTAX	SEQUENCE OF LogEntry
+	   MAX-ACCESS not-accessible
+       STATUS  	current
+       DESCRIPTION
+                "Log record Table"
+        ::= { log 7 }
+
+logEntry OBJECT-TYPE
+		SYNTAX 	LogEntry
+		MAX-ACCESS not-accessible
+		STATUS 	current 
+		DESCRIPTION
+	    	"Specific entry in Log Table"
+		INDEX { logIndex }
+		::= { logTable 1 }
+
+LogEntry ::=
+		SEQUENCE 		{ 
+			logIndex		Integer32,
+			logContent		DisplayString
+		}
+
+logIndex		 OBJECT-TYPE
+			SYNTAX               Integer32(1..3000)
+			MAX-ACCESS           not-accessible
+			STATUS               current
+			DESCRIPTION
+					"Index of Log."
+				::= { logEntry 1 }
+	    
+logContent			 OBJECT-TYPE
+			SYNTAX               DisplayString
+			MAX-ACCESS           read-only
+			STATUS               current
+			DESCRIPTION
+					"Event Log String."
+				::= { logEntry 2 }
+	
+-------------- loopback ----------------------------------
+
+loopbackOfBaseband OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The loopback status of baseband. "
+        ::= { loopback 1 } 
+
+loopbackOfRF OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The loopback status of RF. "
+        ::= { loopback 2 } 
+                                                                                                                                                                 
+loopbackOfEth OBJECT-TYPE
+        SYNTAX  INTEGER {
+        off(0),
+        on(1) } 
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION 
+                "The loopback status of Ethernet. "
+        ::= { loopback 3 } 
+
+END

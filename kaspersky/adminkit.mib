@@ -1,0 +1,562 @@
+
+KLADMINKIT-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	NOTIFICATION-TYPE, OBJECT-TYPE, OBJECT-IDENTITY, MODULE-IDENTITY, Unsigned32, Counter32
+		FROM SNMPv2-SMI
+	kaspersky
+		FROM KASPERSKY-MIB;
+
+kladminkit MODULE-IDENTITY
+	LAST-UPDATED "201511161020Z"
+	ORGANIZATION 
+		"Kaspersky Lab Ltd."
+	CONTACT-INFO 
+		"Phone:  +7 (495) 797-87-00
+		 E-mail:  sales@kaspersky.com
+		 Web:     http://www.kaspersky.com; http://www.viruslist.com
+		 Support: http://support.kaspersky.com/"
+	DESCRIPTION 
+		"MIB file for Kaspersky Administration Kit."
+	REVISION "201511161020Z"
+		DESCRIPTION
+		"The latest version of this MIB module."
+	::= { kaspersky 1093 }
+
+
+counters  OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"Settings and statistics for operation of the administration kit."
+	::= { kladminkit 1 }
+
+traps  OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"Events that occur during product operation."
+	::= { kladminkit 0 }
+
+eventVars            OBJECT IDENTIFIER ::= { traps 1 }
+
+deployment OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"Deployment."
+	::= { counters 1 }
+
+deploymentStatus OBJECT-TYPE
+	SYNTAX     INTEGER { ok(0), info(1), warning(2), critical(3) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"Status of deployment."
+	::= { deployment 1 }
+
+deploymentReasons OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"These reasons determinate the status of deployment."
+	::= { deployment 2 }
+
+noAntivirusSoftware OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that in administration's groups too many hosts without Antivirus software."
+	::= { deploymentReasons 1 }
+
+remoteInstallTaskFailed OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that the task of the remote installation failed on some hosts."
+	::= { deploymentReasons 2 }
+
+licenceExpiring OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that the licence of some hosts will be expired soon."
+	::= { deploymentReasons 3 }
+
+licenceExpired OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that the licence of some hosts is expired."
+	::= { deploymentReasons 4 }
+
+hostsInGroups OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts in server administration's groups."
+	::= { deployment 3 }
+
+hostsWithAntivirus OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts with Antivirus software."
+	::= { deployment 4 }
+
+hostsRemoteInstallFailed OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts on which the task of the remote installation failed."
+	::= { deployment 5 }
+
+licenceExpiringSerial OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The serial number of the expiring licence. Licence considers is expiring if it expired less than 7 days."
+	::= { deployment 6 }
+
+licenceExpiredSerial OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The serial number of the expired licence."
+	::= { deployment 7 }
+
+licenceExpiringDays OBJECT-TYPE
+	SYNTAX     Unsigned32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"Number of days till the expiring licence period is finished. Licence considers is expiring if it expired less than 7 days."
+	::= { deployment 8 }
+
+hostsLicenceExpiring OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts with the expiring licence. Licence considers is expiring if it expired less than 7 days."
+	::= { deployment 9 }
+
+hostsLicenceExpired OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts with the expired licence."
+	::= { deployment 10 }
+
+updates OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"Updates."
+	::= { counters 2 }
+
+updatesStatus OBJECT-TYPE
+	SYNTAX     INTEGER { ok(0), info(1), warning(2), critical(3) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"Up to date base's status."
+	::= { updates 1 }
+
+updatesReasons OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"These reasons determinate the status of updates."
+	::= { updates 2 }
+
+serverNotUpdated OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that server was not updated for a long time."
+	::= { updatesReasons 1 }
+
+notUpdatedHosts OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that the some hosts were not updated for a long time."
+	::= { updatesReasons 2 }
+
+lastServerUpdateTime OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The last time when server has been updated."
+	::= { updates 3 }
+
+hostsNotUpdated OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts not up to date."
+	::= { updates 4 }
+
+protection OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"Real time protection."
+	::= { counters 3 }
+
+protectionStatus OBJECT-TYPE
+	SYNTAX     INTEGER { ok(0), info(1), warning(2), critical(3) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"Status of real time protection."
+	::= { protection 1 }
+
+protectionReasons OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"These reasons determinate the status of real time protection."
+	::= { protection 2 }
+
+antivirusNotRunning OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that antivirus is not running on some hosts."
+	::= { protectionReasons 1 }
+
+realtimeNotRunning OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that real time protection is not running on some hosts."
+	::= { protectionReasons 2 }
+
+notCuredFound OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that on some hosts found not cured objects."
+	::= { protectionReasons 4 }
+
+tooManyThreats OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that on some hosts found too many threats."
+	::= { protectionReasons 5 }
+
+virusOutbreak OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows virus outbreak status of the system."
+	::= { protectionReasons 6 }
+
+hostsAntivirusNotRunning OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts without running antivirus."
+	::= { protection 3 }
+
+hostsRealtimeNotRunning OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts without running real time protection."
+	::= { protection 4 }
+
+hostsRealtimeLevelChanged OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts with not acceptable level of real time protection."
+	::= { protection 5 }
+
+hostsNotCuredObject OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts with not cured objects."
+	::= { protection 6 }
+
+hostsTooManyThreats OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts with too many threats."
+	::= { protection 7 }
+
+fullscan OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"Real time protection."
+	::= { counters 4 }
+
+fullscanStatus OBJECT-TYPE
+	SYNTAX     INTEGER { ok(0), info(1), warning(2), critical(3) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"Status of full scan."
+	::= { fullscan 1 }
+
+fullscanReasons OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"These reasons determinate the status of full scan."
+	::= { fullscan 2 }
+
+notScannedLately OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that some hosts has not been scanned lately."
+	::= { fullscanReasons 1 }
+
+hostsNotScannedLately OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts that has not been scanned lately."
+	::= { fullscan 3 }
+
+logicalNetwork OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"Real time protection."
+	::= { counters 5 }
+
+logicalNetworkStatus OBJECT-TYPE
+	SYNTAX     INTEGER { ok(0), info(1), warning(2), critical(3) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"Status of the logical network of the Administration Server."
+	::= { logicalNetwork 1 }
+
+logicalNetworkReasons OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"These reasons determinate the status of the logical network."
+	::= { logicalNetwork 2 }
+
+notConnectedLongTime OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that some hosts has not connected to the server for a long time."
+	::= { logicalNetworkReasons 1 }
+
+controlLost OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that the server has lost control of some hosts."
+	::= { logicalNetworkReasons 2 }
+
+hostsFound OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of new hosts found by server."
+	::= { logicalNetwork 3 }
+
+groupsCount OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of groups on the server."
+	::= { logicalNetwork 4 }
+
+hostsNotConnectedLongTime OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts that has not connected to the server for a long time."
+	::= { logicalNetwork 5 }
+
+hostsControlLost OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of hosts are not controlled by the server ."
+	::= { logicalNetwork 6 }
+
+events OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"Real time protection."
+	::= { counters 6 }
+
+eventsStatus OBJECT-TYPE
+	SYNTAX     INTEGER { ok(0), info(1), warning(2), critical(3) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"Status of the event's subsystem."
+	::= { events 1 }
+
+eventsReasons OBJECT-IDENTITY
+	STATUS     current
+	DESCRIPTION 
+		"These reasons determinate the status of the event's subsystem."
+	::= { events 2 }
+
+criticalEventOccured OBJECT-TYPE
+	SYNTAX     INTEGER { off(0), on(1) }
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"This reason shows that the server has some critical events."
+	::= { eventsReasons 1 }
+
+criticalEventsCount OBJECT-TYPE
+	SYNTAX     Counter32
+	MAX-ACCESS read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of critical events on the server."
+	::= { events 3 }
+
+eventDateAndTime  OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS accessible-for-notify
+	STATUS     current
+	DESCRIPTION 
+		"Event occurrence time."
+	::= { eventVars 1 }
+
+eventSeverity  OBJECT-TYPE
+	SYNTAX     INTEGER { info (1), warning (2), error (3), critical (4) }
+	MAX-ACCESS accessible-for-notify
+	STATUS     current
+	DESCRIPTION 
+		"Event severity (informational, warning, error, critical )."
+	::= { eventVars 2 }
+
+computerName  OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS accessible-for-notify
+	STATUS     current
+	DESCRIPTION 
+		"Computer name."
+	::= { eventVars 3 }
+
+applicationName  OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS accessible-for-notify
+	STATUS     current
+	DESCRIPTION 
+		"Name of application."
+	::= { eventVars 4 }
+
+eventCaption  OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS accessible-for-notify
+	STATUS     current
+	DESCRIPTION 
+		"Caption of event."
+	::= { eventVars 5 }
+
+eventDescription  OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS accessible-for-notify
+	STATUS     current
+	DESCRIPTION 
+		"Description of event."
+	::= { eventVars 6 }
+
+eventType  OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	MAX-ACCESS accessible-for-notify
+	STATUS     current
+	DESCRIPTION 
+		"Event type."
+	::= { eventVars 7 }
+
+eventCritical  NOTIFICATION-TYPE
+	OBJECTS { eventDateAndTime,
+		eventSeverity,
+		computerName, 
+		applicationName,  
+		eventCaption,
+		eventDescription,
+		eventType
+		}
+	STATUS     current
+	DESCRIPTION 
+		"Event with critical severity."
+	::= { traps 2 }
+
+eventError  NOTIFICATION-TYPE
+	OBJECTS { eventDateAndTime,
+		eventSeverity,
+		computerName, 
+		applicationName,  
+		eventCaption,
+		eventDescription,
+		eventType
+		}
+	STATUS     current
+	DESCRIPTION 
+		"Event with error severity."
+	::= { traps 3 }
+
+eventWarning  NOTIFICATION-TYPE
+	OBJECTS { eventDateAndTime,
+		eventSeverity,
+		computerName, 
+		applicationName,  
+		eventCaption,
+		eventDescription,
+		eventType
+		}
+	STATUS     current
+	DESCRIPTION 
+		"Event with warning severity."
+	::= { traps 4 }
+
+eventInfo  NOTIFICATION-TYPE
+	OBJECTS { eventDateAndTime,
+		eventSeverity,
+		computerName, 
+		applicationName,  
+		eventCaption,
+		eventDescription,
+		eventType
+		}
+	STATUS     current
+	DESCRIPTION 
+		"Event with informational severity."
+	::= { traps 5 }
+
+END
+

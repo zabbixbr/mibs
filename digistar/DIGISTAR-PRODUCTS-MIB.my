@@ -1,0 +1,361 @@
+DIGISTAR-PRODUCTS-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+       enterprises, MODULE-IDENTITY,
+       OBJECT-TYPE, OBJECT-IDENTITY FROM SNMPv2-SMI
+       digistarProducts, digistarModules FROM DIGISTAR-MIB;
+
+digistarProductsMIB MODULE-IDENTITY
+
+        LAST-UPDATED "201210250000Z"  -- 25 October 2012
+        ORGANIZATION    "Digistar Telecomunication, Inc."
+        CONTACT-INFO
+                "       Digistar 
+
+                Postal: Sao Leopoldo, RS
+                        Brazil
+
+                Tel: +
+
+                E-mail: engenharia@digistar.com.br"
+        DESCRIPTION
+                "This module defines the object identifiers that are
+	        assigned to various hardware platforms."
+        REVISION "201210250000Z"  -- 25 October 2012
+	DESCRIPTION
+            "Initial revision"
+::= { digistarModules 1 }
+
+--
+-- OBJECTS
+--
+
+-- PABX:
+
+digistarXT100  OBJECT IDENTIFIER
+    ::= { digistarProducts 1 } 
+
+digistarXT160  OBJECT IDENTIFIER
+    ::= { digistarProducts 2 } 
+
+digistarXT320  OBJECT IDENTIFIER
+    ::= { digistarProducts 3 } 
+
+-- XT-74IP
+digistarXIP1x0Lite  OBJECT IDENTIFIER 
+    ::= { digistarProducts 4 } 
+
+-- XT-74IP Plus
+digistarXIP1x0Plus  OBJECT IDENTIFIER 
+    ::= { digistarProducts 5 } 
+
+digistarXIP220  OBJECT IDENTIFIER
+    ::= { digistarProducts 6 }
+
+digistarXIP240  OBJECT IDENTIFIER
+    ::= { digistarProducts 7 }
+
+digistarXIP270  OBJECT IDENTIFIER
+    ::= { digistarProducts 8 }
+
+digistarXIP500  OBJECT IDENTIFIER
+    ::= { digistarProducts 9 }
+
+digistarXIP230  OBJECT IDENTIFIER
+    ::= { digistarProducts 10 }
+
+--Lite
+
+digistarXIP220lite  OBJECT IDENTIFIER
+    ::= { digistarProducts 13 }
+
+digistarXIP220gsmlite OBJECT IDENTIFIER
+    ::= { digistarProducts 14 }
+
+digistarXIP230lite  OBJECT IDENTIFIER
+    ::= { digistarProducts 15 }
+
+-- Pabx CPE
+
+digistarXIP220cpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 16 }
+
+digistarXIP240cpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 17 }
+
+digistarXIP270cpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 18 }
+
+digistarXIP500cpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 19 }
+
+digistarXIP230cpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 90 }
+
+-- IAD CPE
+
+digistarXIP220iadcpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 26 }
+
+digistarXIP240iadcpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 27 }
+
+digistarXIP270iadcpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 28 }
+
+digistarXIP500iadcpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 29 }
+
+digistarXIP230iadcpe  OBJECT IDENTIFIER
+    ::= { digistarProducts 91 }
+
+-- Gateway:
+
+digistarAG30  OBJECT IDENTIFIER
+    ::= { digistarProducts 30 }
+
+digistarAG30Plus OBJECT IDENTIFIER
+    ::= { digistarProducts 31 }
+
+--AG30Full?
+--digistarAG30Full OBJECT IDENTIFIER
+--    ::= { digistarProducts 32 }
+
+
+--GSM
+digistarAG220  OBJECT IDENTIFIER
+    ::= { digistarProducts 36 }
+
+digistarAG240  OBJECT IDENTIFIER
+    ::= { digistarProducts 37 }
+
+digistarAG500  OBJECT IDENTIFIER
+    ::= { digistarProducts 39 }
+
+
+--RCG:
+
+digistarRCG1700	OBJECT IDENTIFIER
+    ::= { digistarProducts 40 }
+
+digistarRCG1701  OBJECT IDENTIFIER
+    ::= { digistarProducts 41 }
+
+digistarRCG1702  OBJECT IDENTIFIER
+    ::= { digistarProducts 42 }
+
+digistarRCG1703  OBJECT IDENTIFIER
+    ::= { digistarProducts 43 }
+
+digistarRCG1704	OBJECT IDENTIFIER
+    ::= { digistarProducts 44 }
+
+digistarRCG1710  OBJECT IDENTIFIER
+    ::= { digistarProducts 45 }
+
+digistarRCG1711  OBJECT IDENTIFIER
+    ::= { digistarProducts 46 }
+
+digistarRCG1712  OBJECT IDENTIFIER
+    ::= { digistarProducts 47 }
+
+digistarRCG1713  OBJECT IDENTIFIER
+    ::= { digistarProducts 48 }
+
+digistarRCG1714  OBJECT IDENTIFIER
+    ::= { digistarProducts 49 }
+
+-- Gabinete plastico
+
+digistarRCG2110	OBJECT IDENTIFIER
+    ::= { digistarProducts 50 }
+
+digistarRCG2111 OBJECT IDENTIFIER
+    ::= { digistarProducts 51 }
+
+digistarRCG2112  OBJECT IDENTIFIER
+    ::= { digistarProducts 52 }
+
+digistarRCG2113  OBJECT IDENTIFIER
+    ::= { digistarProducts 53 }
+
+digistarRCG2114	OBJECT IDENTIFIER
+    ::= { digistarProducts 54 }
+
+digistarRCG2115  OBJECT IDENTIFIER
+    ::= { digistarProducts 55 }
+
+digistarRCG2116  OBJECT IDENTIFIER
+    ::= { digistarProducts 56 }
+
+digistarRCG2117  OBJECT IDENTIFIER
+    ::= { digistarProducts 57 }
+
+digistarRCG2118  OBJECT IDENTIFIER
+    ::= { digistarProducts 58 }
+
+digistarRCG2119  OBJECT IDENTIFIER
+    ::= { digistarProducts 59 }
+
+
+digistarRCG4210  OBJECT IDENTIFIER
+    ::= { digistarProducts 92 }
+
+digistarRCG4211  OBJECT IDENTIFIER
+    ::= { digistarProducts 93 }
+
+digistarRCG4212  OBJECT IDENTIFIER
+    ::= { digistarProducts 94 }
+
+digistarRCG4220  OBJECT IDENTIFIER
+    ::= { digistarProducts 95 }
+
+digistarRCG4221  OBJECT IDENTIFIER
+    ::= { digistarProducts 96 }
+
+digistarRCG4222  OBJECT IDENTIFIER
+    ::= { digistarProducts 97 }
+
+digistarRCG4310  OBJECT IDENTIFIER
+    ::= { digistarProducts 98 }
+
+digistarRCG4311  OBJECT IDENTIFIER
+    ::= { digistarProducts 99 }
+
+digistarRCG4312  OBJECT IDENTIFIER
+    ::= { digistarProducts 100 }
+
+digistarRCG4320  OBJECT IDENTIFIER
+    ::= { digistarProducts 101 }
+
+digistarRCG4321  OBJECT IDENTIFIER
+    ::= { digistarProducts 102 }
+
+digistarRCG4322  OBJECT IDENTIFIER
+    ::= { digistarProducts 103 }
+
+
+-- Gabinete metalico
+
+digistarRCG3110	OBJECT IDENTIFIER
+    ::= { digistarProducts 60 }
+
+digistarRCG3111 OBJECT IDENTIFIER
+    ::= { digistarProducts 61 }
+
+digistarRCG3112  OBJECT IDENTIFIER
+    ::= { digistarProducts 62 }
+
+digistarRCG3113  OBJECT IDENTIFIER
+    ::= { digistarProducts 63 }
+
+digistarRCG3114	OBJECT IDENTIFIER
+    ::= { digistarProducts 64 }
+
+digistarRCG3115  OBJECT IDENTIFIER
+    ::= { digistarProducts 65 }
+
+digistarRCG3116  OBJECT IDENTIFIER
+    ::= { digistarProducts 66 }
+
+digistarRCG3117  OBJECT IDENTIFIER
+    ::= { digistarProducts 67 }
+
+digistarRCG3118  OBJECT IDENTIFIER
+    ::= { digistarProducts 68 }
+
+digistarRCG3119  OBJECT IDENTIFIER
+    ::= { digistarProducts 69 }
+
+
+digistarRCG5210  OBJECT IDENTIFIER
+    ::= { digistarProducts 104 }
+
+digistarRCG5211  OBJECT IDENTIFIER
+    ::= { digistarProducts 105 }
+
+digistarRCG5212  OBJECT IDENTIFIER
+    ::= { digistarProducts 106 }
+
+digistarRCG5220  OBJECT IDENTIFIER
+    ::= { digistarProducts 107 }
+
+digistarRCG5221  OBJECT IDENTIFIER
+    ::= { digistarProducts 108 }
+
+digistarRCG5222  OBJECT IDENTIFIER
+    ::= { digistarProducts 109 }
+
+digistarRCG5310  OBJECT IDENTIFIER
+    ::= { digistarProducts 110 }
+
+digistarRCG5311  OBJECT IDENTIFIER
+    ::= { digistarProducts 111 }
+
+digistarRCG5312  OBJECT IDENTIFIER
+    ::= { digistarProducts 112 }
+
+digistarRCG5320  OBJECT IDENTIFIER
+    ::= { digistarProducts 113 }
+
+digistarRCG5321  OBJECT IDENTIFIER
+    ::= { digistarProducts 114 }
+
+digistarRCG5322  OBJECT IDENTIFIER
+    ::= { digistarProducts 115 }
+
+
+
+-- RCS:
+
+digistarRCS400  OBJECT IDENTIFIER
+    ::= { digistarProducts 70 }
+
+digistarRCS600  OBJECT IDENTIFIER
+    ::= { digistarProducts 71 }
+
+
+-- ETL:
+
+digistarETL8100	OBJECT IDENTIFIER
+    ::= { digistarProducts 80 }
+
+digistarETL8101	OBJECT IDENTIFIER
+    ::= { digistarProducts 81 }
+
+digistarETL81x1 OBJECT IDENTIFIER
+    ::= { digistarProducts 82 }
+
+digistarETL8201	OBJECT IDENTIFIER
+    ::= { digistarProducts 83 }
+
+digistarETL82x1 OBJECT IDENTIFIER
+    ::= { digistarProducts 84 }
+
+digistarETL8401	OBJECT IDENTIFIER
+    ::= { digistarProducts 85 }
+
+digistarETL84x1 OBJECT IDENTIFIER
+    ::= { digistarProducts 86 }
+
+
+--MRG:
+
+--digistarMRG700  OBJECT IDENTIFIER
+--    ::= { digistarProducts ? }
+--
+--digistarMRG1000-1100  OBJECT IDENTIFIER
+--    ::= { digistarProducts ? }
+
+-- DOLT:
+
+digistarDOLT1044 OBJECT IDENTIFIER
+    ::= { digistarProducts 120 }
+
+digistarDOLT1048 OBJECT IDENTIFIER
+    ::= { digistarProducts 121 }
+
+digistarDOLT1288 OBJECT IDENTIFIER
+    ::= { digistarProducts 122 }
+
+END
+
